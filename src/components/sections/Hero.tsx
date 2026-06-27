@@ -63,7 +63,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             style={{
-              color: "#6B7280",              //Tagline "BEYOND LIMITS...
+              color: "#6B7280",          //Tagline "BEYOND LIMITS...
               fontSize: "14px",
               fontWeight: 600,
               letterSpacing: "0.15em",
@@ -83,8 +83,8 @@ export default function Hero() {
             style={{
               fontFamily: "Bebas Neue, sans-serif",
               fontSize: "110px",
-              color: "#1E3A5F",               //..."MIT-ADT" heading
-              fontWeight: 780,                  //MIT ADT BOAT CLUB ...FONT WIDTH
+              color: "#1E3A5F",             ///..."MIT-ADT" heading
+              fontWeight: 780,                ///MIT ADT BOAT CLUB ...FONT WIDTH
               lineHeight: 1.05,
               letterSpacing: "0.03em",
               marginBottom: "24px",
