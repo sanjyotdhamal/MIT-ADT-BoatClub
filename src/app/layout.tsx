@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   description: "Official website of MIT-ADT Boat Club — Pune",
   icons: {
     icon: "/images/logo.png",
-  },
-};
+    },
+  };
 
 export default function RootLayout({
   children,
