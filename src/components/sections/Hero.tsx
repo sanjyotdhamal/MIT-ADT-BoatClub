@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   const stats = [
-    { value: "50+", label: "Championships Won" },
-    { value: "200+", label: "Active Members" },
-    { value: "30+", label: "Years of Legacy" },
+    { value: "50+", label: "Medals Earned" },
+    { value: "40+", label: "Active Members" },
+    { value: "15+", label: "Years of Excellence" }
   ];
 
   return (
