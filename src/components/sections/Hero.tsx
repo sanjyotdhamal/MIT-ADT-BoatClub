@@ -61,7 +61,7 @@ export default function Hero() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.2 }}
             style={{
               color: "#6B7280",          //Tagline "BEYOND LIMITS...
               fontSize: "14px",
@@ -79,7 +79,7 @@ export default function Hero() {
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
             style={{
               fontFamily: "Bebas Neue, sans-serif",
               fontSize: "110px",
@@ -101,7 +101,7 @@ export default function Hero() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
             style={{
               fontFamily: "Inter, sans-serif",
               fontSize: "17px",
@@ -120,11 +120,11 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
             style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}
           >
             <a
-              href="#join"
+              href="join"
               style={{
                 background: "#1E3A5F",
                 color: "#ffffff",               //Join the Club button
@@ -140,7 +140,7 @@ export default function Hero() {
               Join the Club
             </a>
             <a
-              href="#about"
+              href="/results"
               style={{
                 background: "rgba(255,255,255,0.08)",
                 backdropFilter: "blur(8px)",
@@ -163,7 +163,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
             style={{
               display: "flex",
               gap: "40px",
