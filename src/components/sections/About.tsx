@@ -127,7 +127,7 @@ export default function About() {
             </p>
 
             <a
-              href="#join"
+              href="/join"
               style={{
                 background: "#1E3A5F",
                 color: "#ffffff",
