@@ -15,6 +15,11 @@ const photos = [
   },
   {
     image: "/images/hero-bg.jpg",
+    title: "State Championship 2026",
+    description: "Our team celebrating gold at Maharashtra State Rowing Championship.",
+  },
+  {
+    image: "/images/hero-bg.jpg",
     title: "Training Session",
     description: "Early morning training session with our dedicated athletes.",
   },
@@ -22,6 +27,11 @@ const photos = [
     image: "/images/hero-bg.jpg",
     title: "National Camp Selection",
     description: "Three of our athletes selected for the National Rowing Camp.",
+  },
+{
+    image: "/images/hero-bg.jpg",
+    title: "State Championship 2026",
+    description: "Our team celebrating gold at Maharashtra State Rowing Championship.",
   },
 ];
 
@@ -40,7 +50,7 @@ export default function Gallery() {
       id="gallery"
       style={{
         background: "#0F2744",
-        padding: "100px 0",
+        padding: "25px 0",
       }}
     >
       <div
@@ -83,7 +93,7 @@ export default function Gallery() {
             }}
           >
             Photo{" "}
-            <span style={{ color: "#f59e0b" }}>Gallery</span>
+            <span style={{ color: "#ffffff" }}>Gallery</span>
           </motion.h2>
         </div>
 
@@ -93,7 +103,7 @@ export default function Gallery() {
             position: "relative",
             borderRadius: "20px",
             overflow: "hidden",
-            height: "520px",
+            height: "450px",
             marginBottom: "32px",
           }}
         >
@@ -126,7 +136,7 @@ export default function Gallery() {
                   left: 0,
                   right: 0,
                   background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)",
-                  padding: "48px 40px 36px",
+                  padding: "40px 35px 30px",
                 }}
               >
                 <h3
@@ -244,7 +254,7 @@ export default function Gallery() {
                 width: i === current ? "32px" : "10px",
                 height: "10px",
                 borderRadius: "5px",
-                background: i === current ? "#f59e0b" : "rgba(255,255,255,0.3)",
+                background: i === current ? "#ffffff" : "rgba(255,255,255,0.3)",
                 border: "none",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
@@ -258,8 +268,8 @@ export default function Gallery() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "16px",
+            gridTemplateColumns: "repeat(6, 1fr)",
+            gap: "10px",
             marginBottom: "48px",
           }}
         >
@@ -272,7 +282,7 @@ export default function Gallery() {
                 borderRadius: "12px",
                 overflow: "hidden",
                 cursor: "pointer",
-                border: i === current ? "3px solid #f59e0b" : "3px solid transparent",
+                border: i === current ? "3px solid #ffffff" : "3px solid transparent",
                 transition: "border 0.3s ease",
                 opacity: i === current ? 1 : 0.6,
               }}
@@ -296,9 +306,9 @@ export default function Gallery() {
             href="/gallery"
             style={{
               display: "inline-block",
-              background: "#f59e0b",
+              background: "#ffffff",
               color: "#0F2744",
-              padding: "14px 48px",
+              padding: "14px 38px",
               borderRadius: "8px",
               fontFamily: "Inter, sans-serif",
               fontSize: "15px",
