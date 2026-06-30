@@ -117,7 +117,7 @@ export default function Navbar() {
 
           {/* Join Club Button */}
           <Link
-            href="/#join"
+            href="/join"
             style={{
               fontFamily: "Inter, sans-serif",
               fontSize: "14px",
