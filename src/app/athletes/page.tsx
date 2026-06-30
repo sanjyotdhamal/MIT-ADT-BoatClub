@@ -158,7 +158,7 @@ export default function AthletesPage() {
       <div
         style={{
           background: "#1E3A5F",
-          padding: "80px 0 40px",
+          padding: "80px 0 10px",
           textAlign: "center",
         }}
       >
