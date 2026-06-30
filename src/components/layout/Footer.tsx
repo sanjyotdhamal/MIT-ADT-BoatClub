@@ -92,10 +92,9 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
               </p>
               <div style={{ display: "flex", gap: "12px" }}>
                 {[
-                  { icon: Globe, href: "https://instagram.com", label: "Instagram" },
-                  { icon: Users, href: "https://facebook.com", label: "Facebook" },
+                  { icon: Globe, href: "https://www.instagram.com/mit_adt_boatclub/", label: "Instagram" },
+                  { icon: Users, href: "https://www.facebook.com/mitboatclub/", label: "Facebook" },
                   { icon: ExternalLink, href: "https://youtube.com", label: "YouTube" },
-                  { icon: Share2, href: "https://twitter.com", label: "Twitter" },
                 ].map((social, i) => (
                   <a
                     key={i}
@@ -295,7 +294,7 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
                 style={{
                   borderRadius: "12px",
                   overflow: "hidden",
-                  border: "2px solid rgba(255,255,255,0.1)",
+                  border: "2px solid rgba(244, 222, 222, 0.98)",
                   position: "relative",
                   cursor: "pointer",
                 }}
@@ -311,32 +310,16 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background: "rgba(30,58,95,0.3)",
+                    background: "rgba(39, 64, 97, 0.3)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     transition: "background 0.2s ease",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(30,58,95,0.1)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(30,58,95,0.3)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(30,58,95,0.3)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(30,58,95,0.0)")}
                 >
-                  <div
-                    style={{
-                      background: "#1E3A5F",
-                      color: "#ffffff",
-                      padding: "8px 16px",
-                      borderRadius: "6px",
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    <MapPin size={14} />
-                    Open in Google Maps
-                  </div>
+                  
                 </div>
               </div>
             </a>
@@ -373,7 +356,6 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
             color: "#6B7280",
           }}
         >
-          Made with ❤️ by MIT-ADT Boat Club Team
         </p>
       </div>
 
