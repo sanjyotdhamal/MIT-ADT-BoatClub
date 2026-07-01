@@ -1,5 +1,6 @@
 "use client";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const news = [
   {
@@ -8,7 +9,7 @@ const news = [
     category: "Championship",
     title: "MIT-ADT Boat Club Wins Gold at State Rowing Championship",
     description:
-      "Our athletes delivered an outstanding performance at the Maharashtra State Rowing Championship, clinching gold in multiple categories.",
+    "Our athletes delivered an outstanding performance at the Maharashtra State Rowing Championship, clinching gold in multiple categories.",
   },
   {
     image: "/images/hero-bg.jpg",
@@ -53,6 +54,9 @@ const news = [
 ];
 
 export default function LatestNews() {
+  const [selectedNews, setSelectedNews] = useState<null | typeof news[0]>(null);
+  
+  
   return (
     <section
       id="news"
@@ -68,9 +72,9 @@ export default function LatestNews() {
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: "radial-gradient(circle, #e2e8f0 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-          opacity: 0.6,
+          backgroundImage: "radial-gradient(circle, #94a3b8 1.5px, transparent 1.5px)",
+backgroundSize: "40px 40px",
+opacity: 0.2,
           zIndex: 0,
         }}
       />
@@ -85,15 +89,27 @@ export default function LatestNews() {
         }}
       >
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "60px" }}>
-          <motion.p
+<div style={{
+  background: "#1E3A5F",
+margin: "0 -48px",
+padding: "10px 30px",
+marginBottom: "60px",
+textAlign: "center",
+width: "100vw",
+position: "relative",
+left: "50%",
+right: "50%",
+marginLeft: "-50vw",
+marginRight: "-50vw",
+}}>
+              <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             style={{
-              color: "#6B7280",
-              fontSize: "13px",
+              color: "rgba(255,255,255,0.6)",
+            fontSize: "13px",
               fontWeight: 600,
               letterSpacing: "0.2em",
               textTransform: "uppercase",
@@ -105,22 +121,22 @@ export default function LatestNews() {
           </motion.p>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            style={{
-              fontFamily: "Bebas Neue, sans-serif",
-              fontSize: "64px",
-              color: "#1E3A5F",
-              letterSpacing: "0.04em",
-              lineHeight: 1,
-              marginBottom: "16px",
-            }}
-          >
-            Latest{" "}
-            <span style={{ color: "#0F2744" }}>News</span>
-          </motion.h2>
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.6, delay: 0.1 }}
+  style={{
+    fontFamily: "Bebas Neue, sans-serif",
+    fontSize: "70px",
+    color: "#ffffff",
+    letterSpacing: "0.04em",
+    lineHeight: 1,
+    marginBottom: "16px",
+  }}
+>
+  Latest{" "}
+  <span style={{ color: "#ffffff" }}>News</span>
+</motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -130,10 +146,10 @@ export default function LatestNews() {
             style={{
               fontFamily: "Inter, sans-serif",
               fontSize: "16px",
-              color: "#6B7280",
-              maxWidth: "500px",
+              color: "rgba(255,255,255,0.7)",
+                maxWidth: "500px",
               margin: "0 auto",
-              lineHeight: 1.7,
+              lineHeight: 1.5,
             }}
           >
             Stay up to date with the latest achievements, events, and
@@ -253,8 +269,8 @@ export default function LatestNews() {
                 </p>
 
                 {/* Read More Button */}
-                <a
-                  href="#"
+                <button
+                  onClick={() => setSelectedNews(item)}
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -267,10 +283,15 @@ export default function LatestNews() {
                     borderBottom: "2px solid #1E3A5F",
                     paddingBottom: "2px",
                     width: "fit-content",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: "0 0 2px 0",
                   }}
                 >
                   Read More →
-                </a>
+                </button>
+
               </div>
             </motion.div>
           ))}
@@ -285,7 +306,7 @@ export default function LatestNews() {
           style={{ textAlign: "center" }}
         >
           <a
-            href="#"
+            href="/news"
             style={{
               display: "inline-block",
               background: "#1E3A5F",
@@ -304,6 +325,144 @@ export default function LatestNews() {
         </motion.div>
 
       </div>
+    {/* Modal Popup */}
+      <AnimatePresence>
+        {selectedNews && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedNews(null)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.7)",
+              zIndex: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "24px",
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+
+              className="modal-scroll"
+              style={{
+                background: "#ffffff",
+                borderRadius: "20px",
+                overflow: "hidden",
+                maxWidth: "700px",
+                width: "100%",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                scrollbarWidth: "none",
+              }}
+            >
+              {/* Modal Image */}
+              <div style={{ height: "320px", overflow: "hidden" }}>
+                <img
+                  src={selectedNews.image}
+                  alt={selectedNews.title}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+
+              {/* Modal Content */}
+              <div style={{ padding: "36px" }}>
+                {/* Category + Date */}
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                  <span
+                    style={{
+                      background: "#EFF6FF",
+                      color: "#1E3A5F",
+                      fontSize: "11px",
+                      fontWeight: 700,
+                      padding: "4px 10px",
+                      borderRadius: "4px",
+                      fontFamily: "Inter, sans-serif",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {selectedNews.category}
+                  </span>
+                  <span style={{ color: "#9CA3AF", fontSize: "13px", fontFamily: "Inter, sans-serif" }}>
+                    {selectedNews.date}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h2
+                  style={{
+                    fontFamily: "Bebas Neue, sans-serif",
+                    fontSize: "36px",
+                    color: "#1E3A5F",
+                    letterSpacing: "0.03em",
+                    lineHeight: 1.2,
+                    marginBottom: "16px",
+                  }}
+                >
+                  {selectedNews.title}
+                </h2>
+
+                {/* Full Description */}
+                <p
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "15px",
+                    color: "#4B5563",
+                    lineHeight: 1.8,
+                    marginBottom: "16px",
+                  }}
+                >
+                  {selectedNews.description}
+                </p>
+                <p
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "15px",
+                    color: "#4B5563",
+                    lineHeight: 1.8,
+                    marginBottom: "28px",
+                  }}
+                >
+                  The MIT-ADT Boat Club continues to set new benchmarks in collegiate
+                  rowing across Maharashtra. Our athletes train rigorously under
+                  experienced coaches and represent the university with pride at every
+                  competition. This achievement reflects the dedication and hard work
+                  of our entire team.
+                </p>
+
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedNews(null)}
+                  style={{
+                    background: "#1E3A5F",
+                    color: "#ffffff",
+                    padding: "12px 32px",
+                    borderRadius: "8px",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "14px",
+                    fontWeight: 700,
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </section>
   );
 }
