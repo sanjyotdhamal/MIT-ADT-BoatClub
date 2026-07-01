@@ -140,7 +140,7 @@ export default function Hero() {
               Join the Club
             </a>
             <a
-              href="/results"
+              href="/achievements"
               style={{
                 background: "rgba(255,255,255,0.08)",
                 backdropFilter: "blur(8px)",
