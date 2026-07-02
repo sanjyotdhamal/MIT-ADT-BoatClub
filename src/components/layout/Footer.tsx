@@ -294,7 +294,7 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
                 style={{
                   borderRadius: "12px",
                   overflow: "hidden",
-                  border: "2px solid rgba(244, 222, 222, 0.98)",
+                  border: "2px solid rgba(45, 17, 123, 0.98)",
                   position: "relative",
                   cursor: "pointer",
                 }}
@@ -316,8 +316,8 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
                     justifyContent: "center",
                     transition: "background 0.2s ease",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(30,58,95,0.3)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(30,58,95,0.0)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(51, 86, 132, 0.3)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0)")}
                 >
                   
                 </div>
