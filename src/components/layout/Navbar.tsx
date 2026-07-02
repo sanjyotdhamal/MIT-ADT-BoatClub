@@ -44,7 +44,7 @@ export default function Navbar() {
         style={{
           maxWidth: "1280px",
           margin: "0 auto",
-          padding: "0 30px",
+          padding: "0 30px ",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -57,8 +57,8 @@ export default function Navbar() {
   src="/images/logo.png"
   alt="MIT Boat Club Logo"
   style={{
-    width: "52px",
-    height: "52px",
+    width: "54px",
+    height: "54px",
     objectFit: "contain",
   }}
 />
@@ -92,7 +92,8 @@ export default function Navbar() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "36px",
+             gap: "30px",
+  marginLeft: "auto",
           }}
           className="desktop-nav"
         >
@@ -116,9 +117,9 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {/* Join Club Button */}
+          {/* Admin Login Button */}
           <Link
-            href="/join"
+            href="/admin/login"
             style={{
               fontFamily: "Inter, sans-serif",
               fontSize: "14px",
@@ -130,11 +131,17 @@ export default function Navbar() {
               textDecoration: "none",
               letterSpacing: "0.03em",
               transition: "background 0.2s ease",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#0F2744")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#1E3A5F")}
+              }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.color = "#ffffff";
+    e.currentTarget.style.borderColor = "#1E3A5F";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.color = "#ffffff";
+    e.currentTarget.style.borderColor = "#e2e8f0";
+  }}
           >
-            Join Club
+            Admin Login
           </Link>
         </div>
 
