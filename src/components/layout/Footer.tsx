@@ -277,8 +277,7 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
                 }}
               >
                 MIT ADT Boat Club,
-                MIT ADT University, Loni Kalbhor,
-                Pune - Solapur Road,
+                MIT ADT University, 
                 Pune, Maharashtra 412201
               </p>
             </div>
@@ -292,17 +291,27 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
             >
               <div
                 style={{
-                  borderRadius: "12px",
+                  borderRadius: "16px",
                   overflow: "hidden",
-                  border: "2px solid rgba(45, 17, 123, 0.98)",
+                  border: "1px solid rgba(45, 17, 123, 0.98)",
                   position: "relative",
                   cursor: "pointer",
+                  transition: "transform 0.25s ease, box-shadow 0.25s ease",
+                  boxShadow: "0 10px 30px rgba(15, 39, 68, 0.06)",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLDivElement).style.transform = "scale(1.02)";
+                  (e.currentTarget as HTMLDivElement).style.boxShadow = "0 16px 40px rgba(15, 39, 68, 0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
+                  (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 30px rgba(15, 39, 68, 0.06)";
                 }}
               >
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3784.5!2d73.9!3d18.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c147b8b3a3bf%3A0x6f7fdcc8e4d6c77e!2sMIT%20ADT%20University!5e0!3m2!1sen!2sin!4v1234567890"
                   width="100%"
-                  height="160"
+                  height="140"
                   style={{ border: 0, display: "block", pointerEvents: "none" }}
                   loading="lazy"
                 />
@@ -310,16 +319,15 @@ const googleMapsUrl = "https://maps.app.goo.gl/PG42wfADzUDuUCXx7";
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background: "rgba(39, 64, 97, 0.3)",
+                    background: "rgba(255, 255, 255, 0)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     transition: "background 0.2s ease",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(51, 86, 132, 0.3)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0)")}
                 >
-                  
                 </div>
               </div>
             </a>
