@@ -49,7 +49,7 @@ export default function AdminLogin() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "24px",
+        padding: "94px",
       }}
     >
       <motion.div
@@ -71,7 +71,7 @@ export default function AdminLogin() {
           <img
             src="/images/logo.png"
             alt="MIT Boat Club"
-            style={{ width: "64px", height: "64px", objectFit: "contain", marginBottom: "16px" }}
+            style={{ width: "90px", height: "90px", objectFit: "contain", marginBottom: "16px", display: "block", margin: "0 auto 0px" }}
           />
           <h1
             style={{
@@ -79,7 +79,7 @@ export default function AdminLogin() {
               fontSize: "28px",
               color: "#1E3A5F",
               letterSpacing: "0.05em",
-              marginBottom: "4px",
+              marginBottom: "2px",
             }}
           >
             MIT-ADT Boat Club
