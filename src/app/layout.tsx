@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import NavbarFooterWrapper from "@/components/layout/NavbarFooterWrapper";
 
 export const metadata: Metadata = {
   title: "MIT-ADT Boat Club",
@@ -22,9 +21,9 @@ export default function RootLayout({
         <link rel="icon" href="/images/logo.png" type="image/png" />
       </head>
       <body style={{ margin: 0, padding: 0 }}>
-        <Navbar />
-        {children}
-        <Footer />
+        <NavbarFooterWrapper>
+          {children}
+        </NavbarFooterWrapper>
       </body>
     </html>
   );

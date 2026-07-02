@@ -75,7 +75,7 @@ export default function NewsPage() {
       <div
         style={{
           background: "#1E3A5F",
-          padding: "80px 0 16px",
+          padding: "75px 0 8px",
           textAlign: "center",
         }}
       >

@@ -9,9 +9,9 @@ export default function JoinPage() {
     email: "",
     phone: "",
     age: "",
-    course: "",
+    department: "",
     year: "",
-    rollNo: "",
+    enrolment_no: "",
     experience: "",
     reason: "",
   });
@@ -21,29 +21,29 @@ export default function JoinPage() {
   };
 
   const handleSubmit = () => {
-    if (!form.name || !form.phone || !form.course) {
+    if (!form.name || !form.phone || !form.department) {
       alert("Please fill Name, Phone and Course at minimum!");
       return;
     }
 
     const message = `
-🚣 *MIT-ADT Boat Club — Join Request*
+*MIT-ADT Boat Club — Join Request*
 
-👤 *Personal Details*
+*Personal Details*
 • Name: ${form.name}
 • Email: ${form.email}
 • Phone: ${form.phone}
 • Age: ${form.age}
 
-🎓 *Academic Details*
-• Course: ${form.course}
+*Academic Details*
+• Department: ${form.department}
 • Year: ${form.year}
-• Roll No: ${form.rollNo}
+• Roll No: ${form.enrolment_no}
 
-🏅 *Rowing Experience*
+*Rowing Experience*
 • Level: ${form.experience}
 
-💬 *Why I want to join*
+*Why I want to join*
 ${form.reason}
 
 _Sent via MIT-ADT Boat Club Website_
@@ -237,8 +237,8 @@ _Sent via MIT-ADT Boat Club Website_
                 <label style={labelStyle}>Department *</label>
                 <input
                   type="text"
-                  name="course"
-                  value={form.course}
+                  name="department"
+                  value={form.department}
                   onChange={handleChange}
                   placeholder="e.g. B.Tech CS"
                   style={inputStyle}
@@ -265,7 +265,7 @@ _Sent via MIT-ADT Boat Club Website_
                 <input
                   type="text"
                   name="rollNo"
-                  value={form.rollNo}
+                  value={form.enrolment_no}
                   onChange={handleChange}
                   placeholder="Your roll no"
                   style={inputStyle}
