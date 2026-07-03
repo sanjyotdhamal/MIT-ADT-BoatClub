@@ -37,11 +37,16 @@ const bestSportsPersonAwards = [
 ];
 
 const athletesInService = [
-  { name: "Rahul Sharma", service: "Indian Navy" },
-  { name: "Amit Desai", service: "Indian Army" },
-  { name: "Karan Joshi", service: "Maharashtra Police" },
-  { name: "Vikram Singh", service: "Indian Air Force" },
-  { name: "Priya Patil", service: "Indian Navy" },
+  { name: "ANKIT SHINDE ", service: "SUB LIEUTENANT IN INDIAN NAVY ", description: "MIT SOFT, ROWING PLAYER -2021 " },
+  { name: "HARSHITA PATIL ", service: "SUB LIEUTENANT IN INDIAN NAVY ", description: "MIT SOE, ROWING PLAYER -2022" },
+  { name: "BHAGYASH BHAGWAT", service: "FLYING OFFICER IN INDIAN AIR FORCE", description: "MIT SOE, ROWING PLAYER -2022" },
+  { name: "AHONA MUJUMDAR", service: "SUB LIEUTENANT IN INDIAN NAVY", description: "MIT SBSR ROWING PLAYER -2023" },
+  { name: "ANIKET UGALMUGALE", service: "INDIAN ARMY, NURSING ASSISTANT", description: "Dr. Vishwanath Karad MIT Sports Academy, ROWING PLAYER " },
+  { name: "VAIBHAV PAWAR", service: "MAHARASHTRA POLICE", description: "Dr. Vishwanath Karad MIT Sports Academy, ROWING PLAYER " },
+  { name: "PRATHAMESH KANDE", service: "BEG BOYS SPORTS COMPANY, INDIAN ARMY", description: "Dr. Vishwanath Karad MIT Sports Academy, ROWING PLAYER " },
+  { name: "BHAGYASHRI GHULE ", service: "SPORTS AUTHORITY OF INDIA, SAI NCOE, JAGATPURI, ORISA", description: "Dr. Vishwanath Karad MIT Sports Academy, ROWING PLAYER " },
+  { name: "ANUSHKA GARJE ", service: "SPORTS AUTHORITY OF INDIA", description: "Dr. Vishwanath Karad MIT Sports Academy, ROWING PLAYER " },
+  
 ];
 
 // ============================================================
@@ -335,15 +340,25 @@ const [activeTab, setActiveTab] = useState<"awards" | "service">("service");
                     >
                       <User size={20} color="#1E3A5F" />
                     </div>
-                    <div
-                      style={{
-                        fontFamily: "Bebas Neue, sans-serif",
-                        fontSize: "22px",
-                        color: "#1E3A5F",
-                        letterSpacing: "0.03em",
-                      }}
-                    >
-                      {athlete.name}
+                    <div>
+                      <div
+                        style={{
+                          fontFamily: "Bebas Neue, sans-serif",
+                          fontSize: "22px",
+                          color: "#1E3A5F",
+                          letterSpacing: "0.03em",
+                        }}
+                      >
+                        {athlete.name}
+                      </div>
+                      <div style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "13px",
+                        color: "#6B7280",
+                        marginTop: "4px",
+                      }}>
+                        {athlete.description}
+                      </div>
                     </div>
                   </div>
                   <div
