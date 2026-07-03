@@ -106,12 +106,12 @@ export default function AdminResults() {
     <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:"#f8fafc", fontFamily:"Inter, sans-serif" }}>
 
       {/* Top Navbar */}
-      <div style={{ background:"#1E3A5F", height:"64px", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 32px", position:"sticky", top:0, zIndex:200, boxShadow:"0 2px 12px rgba(0,0,0,0.18)" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
-          <img src="/images/logo.png" alt="Logo" style={{ width:"34px", height:"34px", objectFit:"contain" }} />
+       <div style={{ background: "#1E3A5F", height: "64px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", position: "sticky", top: 0, zIndex: 200, boxShadow: "0 2px 12px rgba(0,0,0,0.18)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <img src="/images/logo.png" alt="Logo" style={{ width: "50px", height: "50px", objectFit: "contain" }} />
           <div>
-            <div style={{ fontFamily:"Bebas Neue, sans-serif", fontSize:"18px", color:"#fff", letterSpacing:"0.06em", lineHeight:1 }}>MIT-ADT</div>
-            <div style={{ fontSize:"10px", color:"rgba(255,255,255,0.5)" }}>Admin Portal</div>
+             <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "20px", color: "#fff", letterSpacing: "0.06em", lineHeight: 1 }}>MIT-ADT BOAT CLUB</div>
+            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>Pune, India</div>
           </div>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>

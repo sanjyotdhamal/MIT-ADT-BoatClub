@@ -36,23 +36,37 @@ type EventItem = {
 // ---------- INTERNATIONAL ----------
 const internationalData: Record<string, EventItem[]> = {
   "2026": [],
-  "2025": [
-    {
-      eventName: "Asian Rowing Championship",
-      date: "October 12, 2025",
-      venue: "Chiang Mai, Thailand",
+  "2025": [],
+  "2024": [
+        {
+      eventName: "Asian Indoor Rowing Championship 2024",
+      date: "10th to 11th August 2024",
+      venue: "Penang, Malaysia ",
       results: [
         {
           category: "Single Scull (Open)",
-          medal: "Bronze",
-          position: "3rd Place",
-          athletes: ["Rahul Sharma"],
+          medal: "Gold Medal",
+          position: "1st Place",
+          athletes: ["Aditya Kedari"],
         },
       ],
     },
   ],
-  "2024": [],
-  "2023": [],
+  "2019": [
+    {
+      eventName: "Asian  Junior Rowing Championship 20219",
+      date: " 16th to 22nd Dec 2019",
+      venue: "Bangkok, Thailand  ",
+      results: [
+        {
+          category: "Single Scull (Open)",
+          medal: "Gold Medal",
+          position: "Participated ",
+          athletes: ["Ahona Mujumdar"],
+        },
+      ],
+    },
+  ],
 };
 
 // ---------- NATIONAL (with sub-categories) ----------
@@ -901,7 +915,7 @@ export default function ResultsPage() {
                             >
                               {athlete}
                             </div>
-                          ))}
+                ))}
                         </div>
                       </div>
                     </motion.div>
@@ -912,6 +926,6 @@ export default function ResultsPage() {
           )}
         </AnimatePresence>
       </div>
-    </div>
-  );
+    </div>  
+    );
 }
