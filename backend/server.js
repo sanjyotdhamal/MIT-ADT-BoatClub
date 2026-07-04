@@ -24,6 +24,7 @@ app.get("/", (req, res) => {
 });
 
 // Connect to MongoDB
+console.log("Connecting to:", process.env.MONGODB_URI);
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
