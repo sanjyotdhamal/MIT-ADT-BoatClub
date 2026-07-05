@@ -1,61 +1,64 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const news = [
+// Default news shown when backend is offline or no featured articles exist
+const defaultNews = [
   {
-    image: "/images/hero-bg.jpg",
-    date: "June 15, 2026",
-    category: "Championship",
+    _id: "d1",
     title: "MIT-ADT Boat Club Wins Gold at State Rowing Championship",
-    description:
-    "Our athletes delivered an outstanding performance at the Maharashtra State Rowing Championship, clinching gold in multiple categories.",
-  },
-  {
-    image: "/images/hero-bg.jpg",
-    date: "May 28, 2026",
-    category: "Selection",
-    title: "Three MIT-ADT Rowers Selected for National Camp",
-    description:
-      "Three of our talented rowers have been selected to represent Maharashtra at the upcoming National Rowing Camp in Pune.",
-  },
-  {
-    image: "/images/hero-bg.jpg",
-    date: "May 10, 2026",
-    category: "Event",
-    title: "Annual Rowing Regatta 2026 Held Successfully",
-    description:
-      "The Annual MIT-ADT Rowing Regatta 2026 was held on the serene waters of Pune with participation from 12 colleges across Maharashtra.",
-  },
-  {
-    image: "/images/hero-bg.jpg",
-    date: "April 22, 2026",
-    category: "Achievement",
-    title: "Coach Rajesh Kumar Receives Best Coach Award",
-    description:
-      "Our head coach Rajesh Kumar has been honored with the Best Rowing Coach award by the Maharashtra Rowing Association.",
-  },
-  {
-    image: "/images/hero-bg.jpg",
-    date: "April 5, 2026",
-    category: "Training",
-    title: "New Training Equipment Added to Boat Club",
-    description:
-      "MIT-ADT Boat Club has upgraded its training facilities with state-of-the-art rowing machines and equipment for better athlete performance.",
-  },
-  {
-    image: "/images/hero-bg.jpg",
-    date: "March 18, 2026",
     category: "Championship",
-    title: "Silver Medal at All India Inter-University Rowing",
-    description:
-      "Our team brought home a silver medal from the All India Inter-University Rowing Championship held in Bhopal.",
+    date: "June 15, 2026",
+    description: "Our athletes delivered an outstanding performance at the Maharashtra State Rowing Championship, clinching gold in multiple categories.",
+    fullDescription: "The MIT-ADT Boat Club had an extraordinary performance at the Maharashtra State Rowing Championship held in Pune. Our athletes competed in 8 categories and clinched gold in 3 of them. The team trained rigorously for 6 months under head coach Rajesh Kumar. This victory marks our 5th consecutive state championship title.",
+    image: "/images/hero-bg.jpg",
+  },
+  {
+    _id: "d2",
+    title: "Three MIT-ADT Rowers Selected for National Camp",
+    category: "Selection",
+    date: "May 28, 2026",
+    description: "Three of our talented rowers have been selected to represent Maharashtra at the upcoming National Rowing Camp in Pune.",
+    fullDescription: "We are proud to announce that three of our athletes have been selected for the National Rowing Camp to be held in Bhopal. This selection is a result of their outstanding performance at the state level competitions.",
+    image: "/images/hero-bg.jpg",
+  },
+  {
+    _id: "d3",
+    title: "Annual Rowing Regatta 2026 Held Successfully",
+    category: "Event",
+    date: "May 10, 2026",
+    description: "The Annual MIT-ADT Rowing Regatta 2026 was held on the serene waters of Pune with participation from 12 colleges across Maharashtra.",
+    fullDescription: "The Annual MIT-ADT Rowing Regatta 2026 was a grand success with participation from 12 colleges and over 200 athletes. MIT-ADT Boat Club won the overall championship trophy for the third consecutive year.",
+    image: "/images/hero-bg.jpg",
   },
 ];
 
+type NewsItem = {
+  _id: string;
+  title: string;
+  category: string;
+  date: string;
+  description: string;
+  fullDescription: string;
+  image?: string;
+};
+
 export default function LatestNews() {
-  const [selectedNews, setSelectedNews] = useState<null | typeof news[0]>(null);
-  
+  const [selectedNews, setSelectedNews] = useState<null | NewsItem>(null);
+  const [news, setNews] = useState<NewsItem[]>([]);
+
+useEffect(() => {
+  fetch("http://localhost:5000/api/news/featured")
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        setNews(data);
+      } else {
+        setNews(defaultNews);
+      }
+    })
+    .catch(() => setNews(defaultNews));
+}, []);
   
   return (
     <section
@@ -166,9 +169,8 @@ marginRight: "-50vw",
             marginBottom: "56px",
           }}
         >
-          {news.map((item, i) => (
-            <motion.div
-              key={i}
+{news.map((item, i) => (
+  <motion.div key={item._id || i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -186,8 +188,8 @@ marginRight: "-50vw",
               {/* Image */}
               <div style={{ height: "200px", overflow: "hidden" }}>
                 <img
-                  src={item.image}
-                  alt={item.title}
+              src={item.image || "/images/hero-bg.jpg"}
+                    alt={item.title}
                   style={{
                     width: "100%",
                     height: "100%",
@@ -422,22 +424,7 @@ marginRight: "-50vw",
                     marginBottom: "16px",
                   }}
                 >
-                  {selectedNews.description}
-                </p>
-                <p
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: "15px",
-                    color: "#4B5563",
-                    lineHeight: 1.8,
-                    marginBottom: "28px",
-                  }}
-                >
-                  The MIT-ADT Boat Club continues to set new benchmarks in collegiate
-                  rowing across Maharashtra. Our athletes train rigorously under
-                  experienced coaches and represent the university with pride at every
-                  competition. This achievement reflects the dedication and hard work
-                  of our entire team.
+                  {selectedNews.fullDescription || selectedNews.description}
                 </p>
 
                 {/* Close Button */}
