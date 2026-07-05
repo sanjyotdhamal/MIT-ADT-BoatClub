@@ -2,10 +2,24 @@ const express = require("express");
 const Athlete = require("../models/Athlete");
 const auth = require("../middleware/auth");
 const router = express.Router();
+const { upload, uploadToCloudinary } = require("../config/cloudinary");
+
+router.post("/upload", auth, upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+    const result = await uploadToCloudinary(req.file.buffer, {
+      public_id: `athlete-${Date.now()}`,
+    });
+    res.json({ imageUrl: result.secure_url, success: true });
+  } catch (err) {
+    console.error("Athlete upload error:", err);
+    res.status(500).json({ message: "Upload failed", error: err.message });
+  }
+});
 
 router.get("/", async (req, res) => {
   try {
-    const athletes = await Athlete.find().sort({ createdAt: -1 });
+    const athletes = await Athlete.find().sort({ createdAt: 1 });
     res.json(athletes);
   } catch {
     res.status(500).json({ message: "Server error" });
