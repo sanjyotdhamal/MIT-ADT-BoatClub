@@ -9,4 +9,8 @@ const gallerySchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+// Indexes for fast sorted queries
+gallerySchema.index({ createdAt: -1 });
+gallerySchema.index({ featured: 1, createdAt: -1 });
+
 module.exports = mongoose.model("Gallery", gallerySchema);
