@@ -12,20 +12,28 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    setLoading(true);
-    setError("");
+const handleLogin = async () => {
+  setLoading(true);
+  setError("");
+
+    const trimmedUsername = username.trim().toLowerCase();
+    const trimmedPassword = password.trim();
 
     // Temporary frontend-only login (replace with real API later)
-    setTimeout(() => {
-      if (username === "admin" && password === "mitboatclub@2026") {
-        localStorage.setItem("adminLoggedIn", "true");
-        router.push("/admin/dashboard");
-      } else {
-        setError("Invalid username or password!");
-        setLoading(false);
-      }
-    }, 800);
+const response = await fetch("http://localhost:5000/api/auth/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ username, password }),
+});
+const data = await response.json();
+if (response.ok) {
+  localStorage.setItem("adminLoggedIn", "true");
+  localStorage.setItem("adminToken", data.token);
+  router.push("/admin/dashboard");
+} else {
+  setError(data.message || "Invalid credentials!");
+  setLoading(false);
+}
   };
 
   const inputStyle = {

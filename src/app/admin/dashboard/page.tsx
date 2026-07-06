@@ -41,8 +41,6 @@ export default function AdminDashboard() {
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-<h1 style={{ fontFamily:"Bebas Neue, sans-serif", fontSize:"20px", color:"rgba(255,255,255,0.85)", letterSpacing:"0.06em" }}>            Dashboard
-          </h1>
           <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "8px", padding: "8px 16px", fontSize: "13px", color: "#ffffff", fontWeight: 600 }}>
             Welcome, Admin
           </div>
