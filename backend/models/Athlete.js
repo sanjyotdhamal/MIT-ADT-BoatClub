@@ -14,6 +14,7 @@ const athleteSchema = new mongoose.Schema({
   matchesPlayed: { type: Number, default: 0 },
   achievements: { type: String },
   image: { type: String, default: "" },
+  featured: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });
 
