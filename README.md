@@ -5,7 +5,7 @@
 
 <div align="center">
 
-![MIT-ADT Boat Club](src/public/images/hero.png)
+![MIT-ADT Boat Club](public/images/hero.png)
 
 **Official Website of MIT-ADT Boat Club, Pune**
 
