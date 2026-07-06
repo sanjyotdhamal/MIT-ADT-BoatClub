@@ -1,15 +1,53 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getPhotos, getFeaturedPhotos, GalleryPhoto } from "@/lib/galleryStore";
+
+const API = "http://localhost:5000/api";
+
+type GalleryPhoto = {
+  _id: string;
+  title: string;
+  description?: string;
+  category: string;
+  image: string;
+  featured: boolean;
+};
+
+// Default photos shown when backend is offline
+const defaultPhotos: GalleryPhoto[] = [
+  { _id: "d1", title: "State Championship 2026", description: "Our team celebrating gold at Maharashtra State Rowing Championship.", category: "Championship", image: "/images/hero-bg.jpg", featured: true },
+  { _id: "d2", title: "Annual Regatta 2026", description: "12 colleges participated in our Annual Rowing Regatta on Pune waters.", category: "Events", image: "/images/hero-bg.jpg", featured: true },
+  { _id: "d3", title: "Training Session", description: "Early morning training session with our dedicated athletes.", category: "Training", image: "/images/hero-bg.jpg", featured: true },
+  { _id: "d4", title: "Group Photo 2026", description: "Annual group photo of all MIT-ADT Boat Club members.", category: "Team", image: "/images/hero-bg.jpg", featured: true },
+];
 
 export default function Gallery() {
   const [current, setCurrent] = useState(0);
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
 
   useEffect(() => {
-    const featured = getFeaturedPhotos();
-    setPhotos(featured.length > 0 ? featured : getPhotos());
+    fetch(`${API}/gallery/featured`)
+      .then((res) => {
+        if (!res.ok) throw new Error("API error");
+        return res.json();
+      })
+      .then((data: GalleryPhoto[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setPhotos(data);
+        } else {
+          // If no featured photos, try getting all photos
+          return fetch(`${API}/gallery`)
+            .then((res) => res.json())
+            .then((allData: GalleryPhoto[]) => {
+              if (Array.isArray(allData) && allData.length > 0) {
+                setPhotos(allData.slice(0, 6));
+              } else {
+                setPhotos(defaultPhotos);
+              }
+            });
+        }
+      })
+      .catch(() => setPhotos(defaultPhotos));
   }, []);
 
   useEffect(() => {
@@ -59,7 +97,8 @@ export default function Gallery() {
               transition={{ duration: 0.6 }}
               style={{ position: "absolute", inset: 0 }}
             >
-              <img src={photos[current].image} alt={photos[current].title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={photos[current].image} alt={photos[current].title} style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/hero-bg.jpg"; }} />
               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)", padding: "40px 35px 30px" }}>
                 <h3 style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "36px", color: "#ffffff", letterSpacing: "0.04em", marginBottom: "8px" }}>
                   {photos[current].title}
@@ -97,7 +136,8 @@ export default function Gallery() {
           {photos.map((photo, i) => (
             <div key={i} onClick={() => setCurrent(i)}
               style={{ height: "100px", borderRadius: "12px", overflow: "hidden", cursor: "pointer", border: i === current ? "3px solid #ffffff" : "3px solid transparent", transition: "border 0.3s ease", opacity: i === current ? 1 : 0.6 }}>
-              <img src={photo.image} alt={photo.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={photo.image} alt={photo.title} style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/hero-bg.jpg"; }} />
             </div>
           ))}
         </div>

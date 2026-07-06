@@ -1,17 +1,51 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getPhotos, GalleryPhoto } from "@/lib/galleryStore";
+
+const API = "http://localhost:5000/api";
+
+type GalleryPhoto = {
+  _id: string;
+  title: string;
+  description?: string;
+  category: string;
+  image: string;
+  featured: boolean;
+  createdAt?: string;
+};
 
 const categories = ["All", "Championship", "Events", "Training", "Team", "Athletes", "Achievement"];
+
+const FALLBACK: GalleryPhoto[] = [
+  { _id: "f1", title: "State Championship 2026", description: "Our team celebrating gold at Maharashtra State Rowing Championship.", category: "Championship", image: "/images/hero-bg.jpg", featured: true },
+  { _id: "f2", title: "Annual Regatta 2026", description: "12 colleges participated in our Annual Rowing Regatta on Pune waters.", category: "Events", image: "/images/hero-bg.jpg", featured: true },
+  { _id: "f3", title: "Training Session", description: "Early morning training session with our dedicated athletes.", category: "Training", image: "/images/hero-bg.jpg", featured: true },
+  { _id: "f4", title: "Group Photo 2026", description: "Annual group photo of all MIT-ADT Boat Club members.", category: "Team", image: "/images/hero-bg.jpg", featured: true },
+];
 
 export default function GalleryPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPhoto, setSelectedPhoto] = useState<null | GalleryPhoto>(null);
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setPhotos(getPhotos());
+    fetch(`${API}/gallery`)
+      .then((res) => {
+        if (!res.ok) throw new Error("API error");
+        return res.json();
+      })
+      .then((data: GalleryPhoto[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setPhotos(data);
+        } else {
+          setPhotos(FALLBACK);
+        }
+      })
+      .catch(() => {
+        setPhotos(FALLBACK);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const filtered = selectedCategory === "All" ? photos : photos.filter((p) => p.category === selectedCategory);
@@ -52,41 +86,53 @@ export default function GalleryPage() {
           ))}
         </div>
 
-        {/* Photo Grid */}
-        <motion.div layout style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
-          {filtered.map((photo, i) => (
-            <motion.div
-              key={photo.id}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              onClick={() => setSelectedPhoto(photo)}
-              style={{ borderRadius: "16px", overflow: "hidden", height: "240px", cursor: "pointer", position: "relative" }}
-            >
-              <img src={photo.image} alt={photo.title}
-                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s ease" }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-              />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)", display: "flex", alignItems: "flex-end", padding: "20px" }}>
-                <div>
-                  <span style={{ background: "#1e324a", color: "#ffffff", fontSize: "10px", fontWeight: 700, padding: "3px 8px", borderRadius: "4px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", marginBottom: "6px", display: "inline-block" }}>
-                    {photo.category}
-                  </span>
-                  <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "18px", color: "#ffffff", letterSpacing: "0.03em" }}>
-                    {photo.title}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {filtered.length === 0 && (
-          <div style={{ textAlign: "center", padding: "60px", color: "#9CA3AF", fontSize: "15px" }}>
-            No photos in this category yet.
+        {/* Loading */}
+        {loading ? (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
+            {[1, 2, 3].map((i) => (
+              <div key={i} style={{ background: "#f1f5f9", borderRadius: "16px", height: "240px", animation: "pulse 1.5s ease-in-out infinite" }} />
+            ))}
           </div>
+        ) : (
+          <>
+            {/* Photo Grid */}
+            <motion.div layout style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
+              {filtered.map((photo, i) => (
+                <motion.div
+                  key={photo._id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  onClick={() => setSelectedPhoto(photo)}
+                  style={{ borderRadius: "16px", overflow: "hidden", height: "240px", cursor: "pointer", position: "relative" }}
+                >
+                  <img src={photo.image} alt={photo.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s ease" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/hero-bg.jpg"; }}
+                  />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)", display: "flex", alignItems: "flex-end", padding: "20px" }}>
+                    <div>
+                      <span style={{ background: "#1e324a", color: "#ffffff", fontSize: "10px", fontWeight: 700, padding: "3px 8px", borderRadius: "4px", fontFamily: "Inter, sans-serif", textTransform: "uppercase", marginBottom: "6px", display: "inline-block" }}>
+                        {photo.category}
+                      </span>
+                      <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "18px", color: "#ffffff", letterSpacing: "0.03em" }}>
+                        {photo.title}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {filtered.length === 0 && (
+              <div style={{ textAlign: "center", padding: "60px", color: "#9CA3AF", fontSize: "15px" }}>
+                No photos in this category yet.
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -107,7 +153,8 @@ export default function GalleryPage() {
               onClick={(e) => e.stopPropagation()}
               style={{ maxWidth: "800px", width: "100%", borderRadius: "20px", overflow: "hidden" }}
             >
-              <img src={selectedPhoto.image} alt={selectedPhoto.title} style={{ width: "100%", maxHeight: "80vh", objectFit: "cover" }} />
+              <img src={selectedPhoto.image} alt={selectedPhoto.title} style={{ width: "100%", maxHeight: "80vh", objectFit: "cover" }}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/hero-bg.jpg"; }} />
               <div style={{ background: "#1E3A5F", padding: "20px 28px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div>
                   <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "24px", color: "#ffffff", letterSpacing: "0.03em" }}>
