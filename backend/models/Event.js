@@ -8,7 +8,7 @@ const eventSchema = new mongoose.Schema({
   colleges: { type: String },
   description: { type: String },
   type: { type: String, default: "Annual" },
-  image: { type: String, default: "" },
+  images: { type: [String], default: [] },
   year: { type: String },
   department: { type: String },
   stat1Label: { type: String },
