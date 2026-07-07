@@ -1,7 +1,105 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Users, Trophy, Building2 } from "lucide-react";
+import { Calendar, MapPin, Users, Trophy, Building2, ChevronLeft, ChevronRight } from "lucide-react";
+
+/* ── Auto-playing image slideshow ── */
+function ImageSlideshow({ images, alt }: { images: string[]; alt: string }) {
+  const [current, setCurrent] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const safeImages = images && images.length > 0 ? images : ["/images/hero-bg.jpg"];
+
+  const startAuto = () => {
+    if (safeImages.length <= 1) return;
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCurrent(c => (c + 1) % safeImages.length);
+    }, 3500);
+  };
+
+  useEffect(() => {
+    startAuto();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [safeImages.length]);
+
+  const go = (dir: 1 | -1, e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    setCurrent(c => (c + dir + safeImages.length) % safeImages.length);
+    startAuto();
+  };
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%", minHeight: "320px", overflow: "hidden", background: "#0a1628" }}>
+      {safeImages.map((src, i) => (
+        <img
+          key={i}
+          src={src}
+          alt={`${alt} ${i + 1}`}
+          style={{
+            position: "absolute", inset: 0, width: "100%", height: "100%",
+            objectFit: "cover",
+            opacity: i === current ? 1 : 0,
+            transition: "opacity 0.7s ease",
+          }}
+        />
+      ))}
+
+      {safeImages.length > 1 && (
+        <>
+          {/* Prev / Next */}
+          <button onClick={e => go(-1, e)} style={slideBtnStyle("left")}>
+            <ChevronLeft size={18} color="#fff" />
+          </button>
+          <button onClick={e => go(1, e)} style={slideBtnStyle("right")}>
+            <ChevronRight size={18} color="#fff" />
+          </button>
+
+          {/* Dots */}
+          <div style={{ position: "absolute", bottom: "12px", left: 0, right: 0, display: "flex", justifyContent: "center", gap: "6px" }}>
+            {safeImages.map((_, i) => (
+              <div
+                key={i}
+                onClick={e => { e.preventDefault(); e.stopPropagation(); setCurrent(i); startAuto(); }}
+                style={{
+                  width: i === current ? "20px" : "7px",
+                  height: "7px",
+                  borderRadius: "4px",
+                  background: i === current ? "#fff" : "rgba(255,255,255,0.5)",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Image counter */}
+          <div style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(0,0,0,0.5)", color: "#fff", fontSize: "11px", padding: "3px 8px", borderRadius: "12px", fontFamily: "Inter, sans-serif" }}>
+            {current + 1} / {safeImages.length}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+const slideBtnStyle = (side: "left" | "right"): React.CSSProperties => ({
+  position: "absolute",
+  top: "50%",
+  [side]: "10px",
+  transform: "translateY(-50%)",
+  background: "rgba(0,0,0,0.45)",
+  border: "none",
+  borderRadius: "50%",
+  width: "36px",
+  height: "36px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  zIndex: 5,
+  transition: "background 0.2s",
+});
 
 const signatureEvents = [
   {
@@ -10,7 +108,7 @@ const signatureEvents = [
     venue: "MIT ADT University, Pune",
     description:
       "MIT-ADT Boat Club proudly hosted the Maharashtra Mini Olympics, a multi-sport event bringing together athletes from across the state. The rowing segment saw participation from over 30 colleges, showcasing top talent in collegiate rowing.",
-    image: "/images/hero-bg.jpg",
+    images: ["/images/hero-bg.jpg"],
     stats: [
       { icon: Users, label: "Participants", value: "500+" },
       { icon: Building2, label: "Clubs", value: "10+" },
@@ -23,7 +121,7 @@ const signatureEvents = [
     venue: "MIT ADT University, Pune",
     description:
       "Our club had the honor of hosting the 6th Indoor National Rowing Championship, bringing together the best indoor rowing athletes from across India. The event featured intense competition on rowing ergometers with national level officials.",
-    image: "/images/hero-bg.jpg",
+    images: ["/images/hero-bg.jpg"],
     stats: [
       { icon: Users, label: "Participants", value: "300+" },
       { icon: Building2, label: "States", value: "12+" },
@@ -103,7 +201,7 @@ const vishwanathYears = {
   },
 };
 
-import { useEffect } from "react";
+
 
 const getStatIcon = (label: string) => {
   const l = label.toLowerCase();
@@ -141,7 +239,7 @@ export default function EventsPage() {
                 year: e.year || "N/A",
                 venue: e.venue,
                 description: e.description,
-                image: e.image || "/images/hero-bg.jpg",
+                images: e.images && e.images.length > 0 ? e.images : ["/images/hero-bg.jpg"],
                 stats: [
                   ...(e.stat1Label && e.stat1Value
                     ? [{ label: e.stat1Label, value: e.stat1Value, icon: getStatIcon(e.stat1Label) }]
@@ -168,7 +266,7 @@ export default function EventsPage() {
                 participants: e.participants || "N/A",
                 colleges: e.colleges || "N/A",
                 description: e.description,
-                image: e.image || "/images/hero-bg.jpg",
+                images: e.images && e.images.length > 0 ? e.images : ["/images/hero-bg.jpg"],
               };
             });
             setVishwanathData(vObj);
@@ -188,7 +286,7 @@ export default function EventsPage() {
                 participants: e.participants || "N/A",
                 department: e.department || "N/A",
                 description: e.description,
-                image: e.image || "/images/hero-bg.jpg",
+                images: e.images && e.images.length > 0 ? e.images : ["/images/hero-bg.jpg"],
               };
             });
             setIcrcData(iObj);
@@ -212,7 +310,7 @@ export default function EventsPage() {
     participants: "N/A",
     colleges: "N/A",
     description: "",
-    image: "/images/hero-bg.jpg",
+    images: ["/images/hero-bg.jpg"],
   };
 
   const currentICRCEvent = icrcData[selectedICRCYear] || {
@@ -221,7 +319,7 @@ export default function EventsPage() {
     participants: "N/A",
     department: "N/A",
     description: "",
-    image: "/images/hero-bg.jpg",
+    images: ["/images/hero-bg.jpg"],
   };
 
   return (
@@ -304,13 +402,9 @@ export default function EventsPage() {
                       gridTemplateColumns: "1fr 1fr",
                     }}
                   >
-                    {/* Image */}
+                    {/* Slideshow */}
                     <div style={{ height: "100%", minHeight: "320px", overflow: "hidden" }}>
-                      <img
-                        src={event.image}
-                        alt={event.name}
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
+                      <ImageSlideshow images={event.images || ["/images/hero-bg.jpg"]} alt={event.name} />
                     </div>
 
                     {/* Content */}
@@ -474,11 +568,7 @@ export default function EventsPage() {
                 }}
               >
                 <div style={{ minHeight: "320px", overflow: "hidden" }}>
-                  <img
-                    src={currentEvent.image || "/images/hero-bg.jpg"}
-                    alt="Vishwanath Sports Meet"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
+                  <ImageSlideshow images={currentEvent.images || ["/images/hero-bg.jpg"]} alt="Vishwanath Sports Meet" />
                 </div>
 
                 <div style={{ padding: "40px" }}>
@@ -651,11 +741,7 @@ export default function EventsPage() {
                 }}
               >
                 <div style={{ minHeight: "320px", overflow: "hidden" }}>
-                  <img
-                    src={currentICRCEvent.image || "/images/hero-bg.jpg"}
-                    alt="Inter-Collegiate Rowing Championship"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
+                  <ImageSlideshow images={currentICRCEvent.images || ["/images/hero-bg.jpg"]} alt="Inter-Collegiate Rowing Championship" />
                 </div>
 
                 <div style={{ padding: "40px" }}>
