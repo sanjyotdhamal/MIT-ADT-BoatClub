@@ -103,15 +103,129 @@ const vishwanathYears = {
   },
 };
 
+import { useEffect } from "react";
+
+const getStatIcon = (label: string) => {
+  const l = label.toLowerCase();
+  if (l.includes("participant") || l.includes("user") || l.includes("rower") || l.includes("athlete")) return Users;
+  if (l.includes("club") || l.includes("state") || l.includes("college") || l.includes("department")) return Building2;
+  return Trophy;
+};
+
 export default function EventsPage() {
   const [selectedYear, setSelectedYear] = useState("2026");
   const [selectedICRCYear, setSelectedICRCYear] = useState("2026");
-  const years = ["2026", "2025", "2024", "2023"];
-  const currentEvent = vishwanathYears[selectedYear as keyof typeof vishwanathYears];
+  const [loading, setLoading] = useState(true);
+
+  const [sigEvents, setSigEvents] = useState<any[]>(signatureEvents);
+  const [vishwanathData, setVishwanathData] = useState<any>(vishwanathYears);
+  const [icrcData, setIcrcData] = useState<any>(icrcYears);
+
+  const [vTabs, setVTabs] = useState<string[]>(["2026", "2025", "2024", "2023"]);
+  const [iTabs, setITabs] = useState<string[]>(["2026", "2025", "2024", "2023"]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/events");
+        if (!res.ok) throw new Error("Failed to fetch events");
+        const data = await res.json();
+
+        if (data && data.length > 0) {
+          // Process Signature Events
+          const dbSig = data.filter((e: any) => e.type === "Signature");
+          if (dbSig.length > 0) {
+            setSigEvents(
+              dbSig.map((e: any) => ({
+                name: e.name,
+                year: e.year || "N/A",
+                venue: e.venue,
+                description: e.description,
+                image: e.image || "/images/hero-bg.jpg",
+                stats: [
+                  ...(e.stat1Label && e.stat1Value
+                    ? [{ label: e.stat1Label, value: e.stat1Value, icon: getStatIcon(e.stat1Label) }]
+                    : []),
+                  ...(e.stat2Label && e.stat2Value
+                    ? [{ label: e.stat2Label, value: e.stat2Value, icon: getStatIcon(e.stat2Label) }]
+                    : []),
+                  ...(e.stat3Label && e.stat3Value
+                    ? [{ label: e.stat3Label, value: e.stat3Value, icon: getStatIcon(e.stat3Label) }]
+                    : []),
+                ],
+              }))
+            );
+          }
+
+          // Process Vishwanath Events
+          const dbV = data.filter((e: any) => e.type === "Vishwanath");
+          if (dbV.length > 0) {
+            const vObj: any = {};
+            dbV.forEach((e: any) => {
+              vObj[e.year || "2026"] = {
+                date: e.date,
+                venue: e.venue,
+                participants: e.participants || "N/A",
+                colleges: e.colleges || "N/A",
+                description: e.description,
+                image: e.image || "/images/hero-bg.jpg",
+              };
+            });
+            setVishwanathData(vObj);
+            const yearsList = Object.keys(vObj).sort((a, b) => parseInt(b) - parseInt(a));
+            setVTabs(yearsList);
+            setSelectedYear(yearsList[0]);
+          }
+
+          // Process ICRC Events
+          const dbI = data.filter((e: any) => e.type === "Inter-Collegiate");
+          if (dbI.length > 0) {
+            const iObj: any = {};
+            dbI.forEach((e: any) => {
+              iObj[e.year || "2026"] = {
+                date: e.date,
+                venue: e.venue,
+                participants: e.participants || "N/A",
+                department: e.department || "N/A",
+                description: e.description,
+                image: e.image || "/images/hero-bg.jpg",
+              };
+            });
+            setIcrcData(iObj);
+            const yearsList = Object.keys(iObj).sort((a, b) => parseInt(b) - parseInt(a));
+            setITabs(yearsList);
+            setSelectedICRCYear(yearsList[0]);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load events from backend:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  const currentEvent = vishwanathData[selectedYear] || {
+    date: "",
+    venue: "",
+    participants: "N/A",
+    colleges: "N/A",
+    description: "",
+    image: "/images/hero-bg.jpg",
+  };
+
+  const currentICRCEvent = icrcData[selectedICRCYear] || {
+    date: "",
+    venue: "",
+    participants: "N/A",
+    department: "N/A",
+    description: "",
+    image: "/images/hero-bg.jpg",
+  };
 
   return (
     <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
-
       {/* Header */}
       <div style={{ background: "#1E3A5F", padding: "75px 0 8px", textAlign: "center" }}>
         <motion.p
@@ -147,31 +261,206 @@ export default function EventsPage() {
       </div>
 
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "60px 48px" }}>
-
-        {/* Signature Events */}
-        <div style={{ marginBottom: "72px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
-            <div style={{ width: "4px", height: "40px", background: "#1E3A5F", borderRadius: "2px" }} />
-            <h2
-              style={{
-                fontFamily: "Bebas Neue, sans-serif",
-                fontSize: "40px",
-                color: "#1E3A5F",
-                letterSpacing: "0.04em",
-              }}
-            >
-              Signature Events
-            </h2>
+        {/* Loading Spinner */}
+        {loading && (
+          <div style={{ textAlign: "center", padding: "40px 0", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+            Loading events...
           </div>
+        )}
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            {signatureEvents.map((event, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
+        {!loading && (
+          <>
+            {/* Signature Events */}
+            <div style={{ marginBottom: "72px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
+                <div style={{ width: "4px", height: "40px", background: "#1E3A5F", borderRadius: "2px" }} />
+                <h2
+                  style={{
+                    fontFamily: "Bebas Neue, sans-serif",
+                    fontSize: "40px",
+                    color: "#1E3A5F",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  Signature Events
+                </h2>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+                {sigEvents.map((event, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: i * 0.1 }}
+                    style={{
+                      background: "#ffffff",
+                      borderRadius: "20px",
+                      overflow: "hidden",
+                      boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+                      border: "1px solid rgba(30,58,95,0.08)",
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                    }}
+                  >
+                    {/* Image */}
+                    <div style={{ height: "100%", minHeight: "320px", overflow: "hidden" }}>
+                      <img
+                        src={event.image}
+                        alt={event.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    </div>
+
+                    {/* Content */}
+                    <div style={{ padding: "40px" }}>
+                      <div
+                        style={{
+                          display: "inline-block",
+                          background: "#f1f5f9",
+                          color: "#1E3A5F",
+                          fontSize: "12px",
+                          fontWeight: 700,
+                          padding: "5px 14px",
+                          borderRadius: "6px",
+                          fontFamily: "Inter, sans-serif",
+                          marginBottom: "16px",
+                        }}
+                      >
+                        Hosted {event.year}
+                      </div>
+
+                      <h3
+                        style={{
+                          fontFamily: "Bebas Neue, sans-serif",
+                          fontSize: "32px",
+                          color: "#1E3A5F",
+                          letterSpacing: "0.03em",
+                          lineHeight: 1.1,
+                          marginBottom: "12px",
+                        }}
+                      >
+                        {event.name}
+                      </h3>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
+                        <MapPin size={14} color="#6B7280" />
+                        <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#6B7280" }}>
+                          {event.venue}
+                        </span>
+                      </div>
+
+                      <p
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: "14px",
+                          color: "#4B5563",
+                          lineHeight: 1.8,
+                          marginBottom: "24px",
+                        }}
+                      >
+                        {event.description}
+                      </p>
+
+                      {/* Stats */}
+                      <div style={{ display: "flex", gap: "16px" }}>
+                        {event.stats &&
+                          event.stats.map((stat: any, j: number) => (
+                            <div
+                              key={j}
+                              style={{
+                                background: "#f8fafc",
+                                borderRadius: "10px",
+                                padding: "12px 16px",
+                                textAlign: "center",
+                                flex: 1,
+                                border: "1px solid rgba(30,58,95,0.08)",
+                              }}
+                            >
+                              <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
+                                <stat.icon size={16} color="#1E3A5F" />
+                              </div>
+                              <div
+                                style={{
+                                  fontFamily: "Bebas Neue, sans-serif",
+                                  fontSize: "20px",
+                                  color: "#1E3A5F",
+                                  letterSpacing: "0.03em",
+                                }}
+                              >
+                                {stat.value}
+                              </div>
+                              <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
+                                {stat.label}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Vishwanath Sports Meet - Annual Event */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                <div style={{ width: "4px", height: "40px", background: "#1E3A5F", borderRadius: "2px" }} />
+                <h2
+                  style={{
+                    fontFamily: "Bebas Neue, sans-serif",
+                    fontSize: "40px",
+                    color: "#1E3A5F",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  Vishwanath Sports Meet
+                </h2>
+              </div>
+              <p
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "14px",
+                  color: "#6B7280",
+                  marginBottom: "32px",
+                  marginLeft: "16px",
+                }}
+              >
+                Our university's annual sports meet, organized every year with rowing as a key event.
+              </p>
+
+              {/* Year Tabs */}
+              <div style={{ display: "flex", gap: "12px", marginBottom: "32px" }}>
+                {vTabs.map((year) => (
+                  <button
+                    key={year}
+                    onClick={() => setSelectedYear(year)}
+                    style={{
+                      padding: "10px 28px",
+                      borderRadius: "8px",
+                      fontFamily: "Bebas Neue, sans-serif",
+                      fontSize: "20px",
+                      letterSpacing: "0.05em",
+                      cursor: "pointer",
+                      border: "2px solid #1E3A5F",
+                      background: selectedYear === year ? "#1E3A5F" : "transparent",
+                      color: selectedYear === year ? "#ffffff" : "#1E3A5F",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    {year}
+                  </button>
+                ))}
+              </div>
+
+              {/* Selected Year Details - Clickable to View Results */}
+              <motion.a
+                href={`/results?category=vsm&year=${selectedYear}`}
+                key={selectedYear}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
                 style={{
                   background: "#ffffff",
                   borderRadius: "20px",
@@ -180,53 +469,44 @@ export default function EventsPage() {
                   border: "1px solid rgba(30,58,95,0.08)",
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
+                  textDecoration: "none",
+                  cursor: "pointer",
                 }}
               >
-                {/* Image */}
-                <div style={{ height: "100%", minHeight: "320px", overflow: "hidden" }}>
+                <div style={{ minHeight: "320px", overflow: "hidden" }}>
                   <img
-                    src={event.image}
-                    alt={event.name}
+                    src={currentEvent.image || "/images/hero-bg.jpg"}
+                    alt="Vishwanath Sports Meet"
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 </div>
 
-                {/* Content */}
                 <div style={{ padding: "40px" }}>
-                  <div
-                    style={{
-                      display: "inline-block",
-                      background: "#f1f5f9",
-                      color: "#1E3A5F",
-                      fontSize: "12px",
-                      fontWeight: 700,
-                      padding: "5px 14px",
-                      borderRadius: "6px",
-                      fontFamily: "Inter, sans-serif",
-                      marginBottom: "16px",
-                    }}
-                  >
-                    Hosted {event.year}
-                  </div>
-
                   <h3
                     style={{
                       fontFamily: "Bebas Neue, sans-serif",
                       fontSize: "32px",
                       color: "#1E3A5F",
                       letterSpacing: "0.03em",
-                      lineHeight: 1.1,
-                      marginBottom: "12px",
+                      marginBottom: "16px",
                     }}
                   >
-                    {event.name}
+                    Vishwanath Sports Meet {selectedYear}
                   </h3>
 
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
-                    <MapPin size={14} color="#6B7280" />
-                    <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#6B7280" }}>
-                      {event.venue}
-                    </span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Calendar size={14} color="#6B7280" />
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#4B5563" }}>
+                        {currentEvent.date}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <MapPin size={14} color="#6B7280" />
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#4B5563" }}>
+                        {currentEvent.venue}
+                      </span>
+                    </div>
                   </div>
 
                   <p
@@ -238,387 +518,246 @@ export default function EventsPage() {
                       marginBottom: "24px",
                     }}
                   >
-                    {event.description}
+                    {currentEvent.description}
                   </p>
 
-                  {/* Stats */}
-                  <div style={{ display: "flex", gap: "16px" }}>
-                    {event.stats.map((stat, j) => (
-                      <div
-                        key={j}
-                        style={{
-                          background: "#f8fafc",
-                          borderRadius: "10px",
-                          padding: "12px 16px",
-                          textAlign: "center",
-                          flex: 1,
-                          border: "1px solid rgba(30,58,95,0.08)",
-                        }}
-                      >
-                        <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
-                          <stat.icon size={16} color="#1E3A5F" />
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: "Bebas Neue, sans-serif",
-                            fontSize: "20px",
-                            color: "#1E3A5F",
-                            letterSpacing: "0.03em",
-                          }}
-                        >
-                          {stat.value}
-                        </div>
-                        <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
-                          {stat.label}
-                        </div>
+                  <div style={{ display: "flex", gap: "16px", marginBottom: "24px" }}>
+                    <div
+                      style={{
+                        background: "#f8fafc",
+                        borderRadius: "10px",
+                        padding: "12px 20px",
+                        flex: 1,
+                        textAlign: "center",
+                        border: "1px solid rgba(30,58,95,0.08)",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
+                        <Users size={16} color="#1E3A5F" />
                       </div>
-                    ))}
+                      <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "22px", color: "#1E3A5F" }}>
+                        {currentEvent.participants}
+                      </div>
+                      <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
+                        Participants
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        background: "#f8fafc",
+                        borderRadius: "10px",
+                        padding: "12px 20px",
+                        flex: 1,
+                        textAlign: "center",
+                        border: "1px solid rgba(30,58,95,0.08)",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
+                        <Building2 size={16} color="#1E3A5F" />
+                      </div>
+                      <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "22px", color: "#1E3A5F" }}>
+                        {currentEvent.colleges}
+                      </div>
+                      <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
+                        Colleges
+                      </div>
+                    </div>
                   </div>
+
+                  <span
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      color: "#1E3A5F",
+                      borderBottom: "2px solid #1E3A5F",
+                      paddingBottom: "2px",
+                    }}
+                  >
+                    Click to View Results →
+                  </span>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Vishwanath Sports Meet - Annual Event */}
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-            <div style={{ width: "4px", height: "40px", background: "#1E3A5F", borderRadius: "2px" }} />
-            <h2
-              style={{
-                fontFamily: "Bebas Neue, sans-serif",
-                fontSize: "40px",
-                color: "#1E3A5F",
-                letterSpacing: "0.04em",
-              }}
-            >
-              Vishwanath Sports Meet
-            </h2>
-          </div>
-          <p
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontSize: "14px",
-              color: "#6B7280",
-              marginBottom: "32px",
-              marginLeft: "16px",
-            }}
-          >
-            Our university's annual sports meet, organized every year with rowing as a key event.
-          </p>
-
-          {/* Year Tabs */}
-          <div style={{ display: "flex", gap: "12px", marginBottom: "32px" }}>
-            {years.map((year) => (
-              <button
-                key={year}
-                onClick={() => setSelectedYear(year)}
-                style={{
-                  padding: "10px 28px",
-                  borderRadius: "8px",
-                  fontFamily: "Bebas Neue, sans-serif",
-                  fontSize: "20px",
-                  letterSpacing: "0.05em",
-                  cursor: "pointer",
-                  border: "2px solid #1E3A5F",
-                  background: selectedYear === year ? "#1E3A5F" : "transparent",
-                  color: selectedYear === year ? "#ffffff" : "#1E3A5F",
-                  transition: "all 0.2s ease",
-                }}
-              >
-                {year}
-              </button>
-            ))}
-          </div>
-
-          {/* Selected Year Details */}
-          <motion.div
-            key={selectedYear}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{
-              background: "#ffffff",
-              borderRadius: "20px",
-              overflow: "hidden",
-              boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-              border: "1px solid rgba(30,58,95,0.08)",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
-            <div style={{ minHeight: "320px", overflow: "hidden" }}>
-              <img
-                src="/images/hero-bg.jpg"
-                alt="Vishwanath Sports Meet"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
+              </motion.a>
             </div>
 
-            <div style={{ padding: "40px" }}>
-              <h3
-                style={{
-                  fontFamily: "Bebas Neue, sans-serif",
-                  fontSize: "32px",
-                  color: "#1E3A5F",
-                  letterSpacing: "0.03em",
-                  marginBottom: "16px",
-                }}
-              >
-                Vishwanath Sports Meet {selectedYear}
-              </h3>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <Calendar size={14} color="#6B7280" />
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#4B5563" }}>
-                    {currentEvent.date}
-                  </span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <MapPin size={14} color="#6B7280" />
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#4B5563" }}>
-                    {currentEvent.venue}
-                  </span>
-                </div>
+            {/* Inter-Collegiate Rowing Championship - Annual Event */}
+            <div style={{ marginTop: "72px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                <div style={{ width: "4px", height: "40px", background: "#1E3A5F", borderRadius: "2px" }} />
+                <h2
+                  style={{
+                    fontFamily: "Bebas Neue, sans-serif",
+                    fontSize: "40px",
+                    color: "#1E3A5F",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  Inter-Collegiate Rowing Championship
+                </h2>
               </div>
-
               <p
                 style={{
                   fontFamily: "Inter, sans-serif",
                   fontSize: "14px",
-                  color: "#4B5563",
-                  lineHeight: 1.8,
-                  marginBottom: "24px",
+                  color: "#6B7280",
+                  marginBottom: "32px",
+                  marginLeft: "16px",
                 }}
               >
-                {currentEvent.description}
+                Annual rowing championship between colleges, organized every year.
               </p>
 
-              <div style={{ display: "flex", gap: "16px" }}>
-                <div
-                  style={{
-                    background: "#f8fafc",
-                    borderRadius: "10px",
-                    padding: "12px 20px",
-                    flex: 1,
-                    textAlign: "center",
-                    border: "1px solid rgba(30,58,95,0.08)",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
-                    <Users size={16} color="#1E3A5F" />
-                  </div>
-                  <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "22px", color: "#1E3A5F" }}>
-                    {currentEvent.participants}
-                  </div>
-                  <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
-                    Participants
-                  </div>
-                </div>
-                <div
-                  style={{
-                    background: "#f8fafc",
-                    borderRadius: "10px",
-                    padding: "12px 20px",
-                    flex: 1,
-                    textAlign: "center",
-                    border: "1px solid rgba(30,58,95,0.08)",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
-                    <Building2 size={16} color="#1E3A5F" />
-                  </div>
-                  <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "22px", color: "#1E3A5F" }}>
-                    {currentEvent.colleges}
-                  </div>
-                  <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
-                    Colleges
-                  </div>
-                </div>
+              {/* Year Tabs */}
+              <div style={{ display: "flex", gap: "12px", marginBottom: "32px" }}>
+                {iTabs.map((year) => (
+                  <button
+                    key={year}
+                    onClick={() => setSelectedICRCYear(year)}
+                    style={{
+                      padding: "10px 28px",
+                      borderRadius: "8px",
+                      fontFamily: "Bebas Neue, sans-serif",
+                      fontSize: "20px",
+                      letterSpacing: "0.05em",
+                      cursor: "pointer",
+                      border: "2px solid #1E3A5F",
+                      background: selectedICRCYear === year ? "#1E3A5F" : "transparent",
+                      color: selectedICRCYear === year ? "#ffffff" : "#1E3A5F",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    {year}
+                  </button>
+                ))}
               </div>
-            </div>
-          </motion.div>
-       
-       </div>
 
-        {/* Inter-Collegiate Rowing Championship - Annual Event */}
-        <div style={{ marginTop: "72px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-            <div style={{ width: "4px", height: "40px", background: "#1E3A5F", borderRadius: "2px" }} />
-            <h2
-              style={{
-                fontFamily: "Bebas Neue, sans-serif",
-                fontSize: "40px",
-                color: "#1E3A5F",
-                letterSpacing: "0.04em",
-              }}
-            >
-              Inter-Collegiate Rowing Championship
-            </h2>
-          </div>
-          <p
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontSize: "14px",
-              color: "#6B7280",
-              marginBottom: "32px",
-              marginLeft: "16px",
-            }}
-          >
-            Annual rowing championship between colleges, organized every year.
-          </p>
-
-          {/* Year Tabs */}
-          <div style={{ display: "flex", gap: "12px", marginBottom: "32px" }}>
-            {years.map((year) => (
-              <button
-                key={year}
-                onClick={() => setSelectedICRCYear(year)}
+              {/* Selected Year Card - Clickable */}
+              <motion.a
+                href={`/results?category=intercollegiate&year=${selectedICRCYear}`}
+                key={selectedICRCYear}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
                 style={{
-                  padding: "10px 28px",
-                  borderRadius: "8px",
-                  fontFamily: "Bebas Neue, sans-serif",
-                  fontSize: "20px",
-                  letterSpacing: "0.05em",
+                  background: "#ffffff",
+                  borderRadius: "20px",
+                  overflow: "hidden",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+                  border: "1px solid rgba(30,58,95,0.08)",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  textDecoration: "none",
                   cursor: "pointer",
-                  border: "2px solid #1E3A5F",
-                  background: selectedICRCYear === year ? "#1E3A5F" : "transparent",
-                  color: selectedICRCYear === year ? "#ffffff" : "#1E3A5F",
-                  transition: "all 0.2s ease",
                 }}
               >
-                {year}
-              </button>
-            ))}
-          </div>
+                <div style={{ minHeight: "320px", overflow: "hidden" }}>
+                  <img
+                    src={currentICRCEvent.image || "/images/hero-bg.jpg"}
+                    alt="Inter-Collegiate Rowing Championship"
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </div>
 
-          {/* Selected Year Card - Clickable */}
-          <motion.a
-            href="/results"
-            key={selectedICRCYear}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{
-              background: "#ffffff",
-              borderRadius: "20px",
-              overflow: "hidden",
-              boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-              border: "1px solid rgba(30,58,95,0.08)",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            <div style={{ minHeight: "320px", overflow: "hidden" }}>
-              <img
-                src="/images/hero-bg.jpg"
-                alt="Inter-Collegiate Rowing Championship"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </div>
+                <div style={{ padding: "40px" }}>
+                  <h3
+                    style={{
+                      fontFamily: "Bebas Neue, sans-serif",
+                      fontSize: "32px",
+                      color: "#1E3A5F",
+                      letterSpacing: "0.03em",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    Inter-Collegiate Rowing Championship {selectedICRCYear}
+                  </h3>
 
-            <div style={{ padding: "40px" }}>
-              <h3
-                style={{
-                  fontFamily: "Bebas Neue, sans-serif",
-                  fontSize: "32px",
-                  color: "#1E3A5F",
-                  letterSpacing: "0.03em",
-                  marginBottom: "16px",
-                }}
-              >
-                Inter-Collegiate Rowing Championship {selectedICRCYear}
-              </h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Calendar size={14} color="#6B7280" />
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#4B5563" }}>
+                        {currentICRCEvent.date}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <MapPin size={14} color="#6B7280" />
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#4B5563" }}>
+                        {currentICRCEvent.venue}
+                      </span>
+                    </div>
+                  </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <Calendar size={14} color="#6B7280" />
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#4B5563" }}>
-                    {icrcYears[selectedICRCYear as keyof typeof icrcYears].date}
+                  <p
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "14px",
+                      color: "#4B5563",
+                      lineHeight: 1.8,
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {currentICRCEvent.description}
+                  </p>
+
+                  <div style={{ display: "flex", gap: "16px", marginBottom: "20px" }}>
+                    <div
+                      style={{
+                        background: "#f8fafc",
+                        borderRadius: "10px",
+                        padding: "12px 20px",
+                        flex: 1,
+                        textAlign: "center",
+                        border: "1px solid rgba(30,58,95,0.08)",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
+                        <Users size={16} color="#1E3A5F" />
+                      </div>
+                      <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "22px", color: "#1E3A5F" }}>
+                        {currentICRCEvent.participants}
+                      </div>
+                      <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
+                        Participants
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        background: "#f8fafc",
+                        borderRadius: "10px",
+                        padding: "12px 20px",
+                        flex: 1,
+                        textAlign: "center",
+                        border: "1px solid rgba(30,58,95,0.08)",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
+                        <Building2 size={16} color="#1E3A5F" />
+                      </div>
+                      <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "22px", color: "#1E3A5F" }}>
+                        {currentICRCEvent.department}
+                      </div>
+                      <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
+                        Department
+                      </div>
+                    </div>
+                  </div>
+
+                  <span
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      color: "#1E3A5F",
+                      borderBottom: "2px solid #1E3A5F",
+                      paddingBottom: "2px",
+                    }}
+                  >
+                    Click to View Results →
                   </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <MapPin size={14} color="#6B7280" />
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#4B5563" }}>
-                    {icrcYears[selectedICRCYear as keyof typeof icrcYears].venue}
-                  </span>
-                </div>
-              </div>
-
-              <p
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: "14px",
-                  color: "#4B5563",
-                  lineHeight: 1.8,
-                  marginBottom: "20px",
-                }}
-              >
-                {icrcYears[selectedICRCYear as keyof typeof icrcYears].description}
-              </p>
-
-              <div style={{ display: "flex", gap: "16px", marginBottom: "20px" }}>
-                <div
-                  style={{
-                    background: "#f8fafc",
-                    borderRadius: "10px",
-                    padding: "12px 20px",
-                    flex: 1,
-                    textAlign: "center",
-                    border: "1px solid rgba(30,58,95,0.08)",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
-                    <Users size={16} color="#1E3A5F" />
-                  </div>
-                  <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "22px", color: "#1E3A5F" }}>
-                    {icrcYears[selectedICRCYear as keyof typeof icrcYears].participants}
-                  </div>
-                  <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
-                    Participants
-                  </div>
-                </div>
-                <div
-                  style={{
-                    background: "#f8fafc",
-                    borderRadius: "10px",
-                    padding: "12px 20px",
-                    flex: 1,
-                    textAlign: "center",
-                    border: "1px solid rgba(30,58,95,0.08)",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>
-                    <Building2 size={16} color="#1E3A5F" />
-                  </div>
-                  <div style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "22px", color: "#1E3A5F" }}>
-                    {icrcYears[selectedICRCYear as keyof typeof icrcYears].department}
-                  </div>
-                  <div style={{ fontFamily: "Inter, sans-serif", fontSize: "11px", color: "#6B7280" }}>
-                    Department
-                  </div>
-                </div>
-              </div>
-
-              <span
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  color: "#1E3A5F",
-                  borderBottom: "2px solid #1E3A5F",
-                  paddingBottom: "2px",
-                }}
-              >
-                Click to View Results →
-              </span>
+              </motion.a>
             </div>
-          </motion.a>
-        </div>
-
+          </>
+        )}
       </div>
     </div>
   );

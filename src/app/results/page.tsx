@@ -189,11 +189,43 @@ export default function ResultsPage() {
           parseInt(b) - parseInt(a)
         );
         setYears(allYears.length ? allYears : ["2026"]);
-        setSelectedYear(allYears[0] || "2026");
+
+        let categoryParam = null;
+        let yearParam = null;
+        if (typeof window !== "undefined") {
+          const searchParams = new URLSearchParams(window.location.search);
+          categoryParam = searchParams.get("category");
+          yearParam = searchParams.get("year");
+        }
+
+        if (categoryParam) {
+          setSelectedCategory(categoryParam);
+          const cat = categoryTabs.find(c => c.key === categoryParam);
+          if (cat?.hasSub) {
+            setSelectedSub("Senior");
+          }
+        }
+
+        if (yearParam) {
+          setSelectedYear(yearParam);
+        } else {
+          setSelectedYear(allYears[0] || "2026");
+        }
       } catch (err) {
         console.error("Results fetch error:", err);
         setYears(["2026"]);
-        setSelectedYear("2026");
+        
+        let categoryParam = null;
+        let yearParam = null;
+        if (typeof window !== "undefined") {
+          const searchParams = new URLSearchParams(window.location.search);
+          categoryParam = searchParams.get("category");
+          yearParam = searchParams.get("year");
+        }
+        if (categoryParam) {
+          setSelectedCategory(categoryParam);
+        }
+        setSelectedYear(yearParam || "2026");
       }
       setLoading(false);
     };
