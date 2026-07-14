@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { User, Phone, Mail, BookOpen, Award, ChevronRight } from "lucide-react";
+import { User, Phone, Mail, BookOpen, Award, ChevronRight, Upload, Shield } from "lucide-react";
 
 export default function JoinPage() {
   const [form, setForm] = useState({
@@ -9,6 +9,11 @@ export default function JoinPage() {
     email: "",
     phone: "",
     age: "",
+    aadharNo: "",
+    nsrsId: "",
+    rfId: "",
+    birthCertificate: "",
+    domicile: "",
     department: "",
     year: "",
     enrolment_no: "",
@@ -16,13 +21,53 @@ export default function JoinPage() {
     reason: "",
   });
 
+  const [uploadingBirth, setUploadingBirth] = useState(false);
+  const [uploadingDomicile, setUploadingDomicile] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "birthCertificate" | "domicile") => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (field === "birthCertificate") setUploadingBirth(true);
+    else setUploadingDomicile(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("http://localhost:5000/api/auth/upload-document", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.imageUrl) {
+        setForm((f) => ({ ...f, [field]: data.imageUrl }));
+        alert(`${field === "birthCertificate" ? "Birth Certificate" : "Domicile Certificate"} uploaded successfully!`);
+      } else {
+        alert(data.message || "Upload failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Failed to upload. Check if backend is running.");
+    } finally {
+      if (field === "birthCertificate") setUploadingBirth(false);
+      else setUploadingDomicile(false);
+    }
+  };
+
   const handleSubmit = () => {
-    if (!form.name || !form.phone || !form.department) {
-      alert("Please fill Name, Phone and Course at minimum!");
+    if (!form.name || !form.phone) {
+      alert("Please fill Name and Phone!");
+      return;
+    }
+
+    if (!form.birthCertificate) {
+      alert("Please upload your Birth Certificate (Compulsory)!");
       return;
     }
 
@@ -31,20 +76,29 @@ export default function JoinPage() {
 
 *Personal Details*
 • Name: ${form.name}
-• Email: ${form.email}
+• Email: ${form.email || "N/A"}
 • Phone: ${form.phone}
-• Age: ${form.age}
+• Age: ${form.age || "N/A"}
+• Aadhar Card No: ${form.aadharNo || "N/A"}
+
+*Sports IDs*
+• NSRS ID: ${form.nsrsId || "N/A"}
+• RF ID: ${form.rfId || "N/A"}
+
+*Documents*
+• Birth Certificate: ${form.birthCertificate}
+• Domicile Certificate: ${form.domicile || "Not Uploaded"}
 
 *Academic Details*
-• Department: ${form.department}
-• Year: ${form.year}
-• Roll No: ${form.enrolment_no}
+• Department: ${form.department || "N/A"}
+• Year: ${form.year || "N/A"}
+• Roll/Enrolment No: ${form.enrolment_no || "N/A"}
 
 *Rowing Experience*
-• Level: ${form.experience}
+• Level: ${form.experience || "N/A"}
 
 *Why I want to join*
-${form.reason}
+${form.reason || "N/A"}
 
 _Sent via MIT-ADT Boat Club Website_
     `.trim();
@@ -215,13 +269,195 @@ _Sent via MIT-ADT Boat Club Website_
                   style={inputStyle}
                 />
               </div>
+              <div style={{ gridColumn: "span 2" }}>
+                <label style={labelStyle}>Aadhar Card Number</label>
+                <input
+                  type="text"
+                  name="aadharNo"
+                  value={form.aadharNo}
+                  onChange={handleChange}
+                  placeholder="Enter your 12-digit Aadhar number"
+                  style={inputStyle}
+                />
+              </div>
             </div>
           </div>
 
           {/* Divider */}
           <div style={{ borderTop: "1px solid #e2e8f0", marginBottom: "36px" }} />
 
-          {/* Section 2 — Academic */}
+          {/* Section 2 — Documents & Sports IDs */}
+          <div style={{ marginBottom: "36px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" }}>
+              <div style={{ background: "#1E3A5F", borderRadius: "10px", padding: "8px", display: "flex" }}>
+                <Shield size={18} color="#ffffff" />
+              </div>
+              <h2 style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "24px", color: "#1E3A5F", letterSpacing: "0.04em" }}>
+                Documents & Sports IDs
+              </h2>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+              <div>
+                <label style={labelStyle}>NSRS ID</label>
+                <input
+                  type="text"
+                  name="nsrsId"
+                  value={form.nsrsId}
+                  onChange={handleChange}
+                  placeholder="Enter NSRS ID if you have one"
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>RF ID</label>
+                <input
+                  type="text"
+                  name="rfId"
+                  value={form.rfId}
+                  onChange={handleChange}
+                  placeholder="Enter RF ID if you have one"
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+
+            {/* Helper link banner */}
+            <div style={{
+              background: "#EFF6FF",
+              border: "1.5px solid #bfdbfe",
+              borderRadius: "10px",
+              padding: "16px",
+              marginBottom: "24px",
+              fontSize: "13px",
+              color: "#1E3A5F",
+              lineHeight: "1.6",
+            }}>
+              💡 <strong>Don't have NSRS or RF IDs?</strong> Click the links below to generate them:
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginTop: "8px" }}>
+                <a
+                  href="https://nsrs.sportsauthorityofindia.gov.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: "#2563eb",
+                    fontWeight: 600,
+                    textDecoration: "underline",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}
+                >
+                  Register on SAI NSRS Portal ↗
+                </a>
+                <a
+                  href="https://rowingfederationofindia.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: "#2563eb",
+                    fontWeight: 600,
+                    textDecoration: "underline",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}
+                >
+                  Register on RFI Portal ↗
+                </a>
+              </div>
+            </div>
+
+            {/* Document Upload Grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div>
+                <label style={labelStyle}>Birth Certificate * <span style={{ color: "#ef4444", fontWeight: 500 }}>(Compulsory)</span></label>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    padding: "12px 16px",
+                    background: form.birthCertificate ? "#f0fdf4" : "#f8fafc",
+                    border: `1.5px dashed ${form.birthCertificate ? "#22c55e" : "#cbd5e1"}`,
+                    borderRadius: "8px",
+                    cursor: uploadingBirth ? "not-allowed" : "pointer",
+                    fontSize: "13px",
+                    color: "#1E3A5F",
+                    fontWeight: 600,
+                    transition: "all 0.2s ease"
+                  }}>
+                    <Upload size={16} />
+                    {uploadingBirth ? "Uploading..." : form.birthCertificate ? "Birth Certificate Uploaded ✅" : "Upload Document (PDF/Image)"}
+                    <input
+                      type="file"
+                      accept="image/*,application/pdf"
+                      disabled={uploadingBirth}
+                      onChange={(e) => handleFileUpload(e, "birthCertificate")}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                  {form.birthCertificate && (
+                    <a
+                      href={form.birthCertificate}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: "12px", color: "#2563eb", textDecoration: "underline", fontWeight: 500 }}
+                    >
+                      View Uploaded Document ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label style={labelStyle}>Domicile Certificate</label>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    padding: "12px 16px",
+                    background: form.domicile ? "#f0fdf4" : "#f8fafc",
+                    border: `1.5px dashed ${form.domicile ? "#22c55e" : "#cbd5e1"}`,
+                    borderRadius: "8px",
+                    cursor: uploadingDomicile ? "not-allowed" : "pointer",
+                    fontSize: "13px",
+                    color: "#1E3A5F",
+                    fontWeight: 600,
+                    transition: "all 0.2s ease"
+                  }}>
+                    <Upload size={16} />
+                    {uploadingDomicile ? "Uploading..." : form.domicile ? "Domicile Uploaded ✅" : "Upload Document (PDF/Image)"}
+                    <input
+                      type="file"
+                      accept="image/*,application/pdf"
+                      disabled={uploadingDomicile}
+                      onChange={(e) => handleFileUpload(e, "domicile")}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                  {form.domicile && (
+                    <a
+                      href={form.domicile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: "12px", color: "#2563eb", textDecoration: "underline", fontWeight: 500 }}
+                    >
+                      View Uploaded Document ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div style={{ borderTop: "1px solid #e2e8f0", marginBottom: "36px" }} />
+
+          {/* Section 3 — Academic */}
           <div style={{ marginBottom: "36px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" }}>
               <div style={{ background: "#1E3A5F", borderRadius: "10px", padding: "8px", display: "flex" }}>
@@ -234,7 +470,7 @@ _Sent via MIT-ADT Boat Club Website_
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
               <div>
-                <label style={labelStyle}>Department *</label>
+                <label style={labelStyle}>Department</label>
                 <input
                   type="text"
                   name="department"
@@ -264,10 +500,10 @@ _Sent via MIT-ADT Boat Club Website_
                 <label style={labelStyle}>Enrolment Number</label>
                 <input
                   type="text"
-                  name="rollNo"
+                  name="enrolment_no"
                   value={form.enrolment_no}
                   onChange={handleChange}
-                  placeholder="Your roll no"
+                  placeholder="Your enrolment no"
                   style={inputStyle}
                 />
               </div>
