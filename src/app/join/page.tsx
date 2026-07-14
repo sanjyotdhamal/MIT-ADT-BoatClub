@@ -85,41 +85,23 @@ export default function JoinPage() {
         throw new Error(errorData.message || "Failed to submit registration details to server.");
       }
 
-      const message = `
-*MIT-ADT Boat Club — Join Request*
-
-*Personal Details*
-• Name: ${form.name}
-• Email: ${form.email || "N/A"}
-• Phone: ${form.phone}
-• Age: ${form.age || "N/A"}
-• Aadhar Card No: ${form.aadharNo || "N/A"}
-
-*Sports IDs*
-• NSRS ID: ${form.nsrsId || "N/A"}
-• RF ID: ${form.rfId || "N/A"}
-
-*Documents*
-• Birth Certificate: ${form.birthCertificate}
-• Domicile Certificate: ${form.domicile || "Not Uploaded"}
-
-*Academic Details*
-• Department: ${form.department || "N/A"}
-• Year: ${form.year || "N/A"}
-• Roll/Enrolment No: ${form.enrolment_no || "N/A"}
-
-*Rowing Experience*
-• Level: ${form.experience || "N/A"}
-
-*Why I want to join*
-${form.reason || "N/A"}
-
-_Sent via MIT-ADT Boat Club Website_
-      `.trim();
-
-      const whatsappNumber = "919822232577"; // Replace with actual WhatsApp number
-      const encodedMessage = encodeURIComponent(message);
-      window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, "_blank");
+      alert("Registration submitted successfully! We will review your details and get back to you soon.");
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        age: "",
+        aadharNo: "",
+        nsrsId: "",
+        rfId: "",
+        birthCertificate: "",
+        domicile: "",
+        department: "",
+        year: "",
+        enrolment_no: "",
+        experience: "",
+        reason: "",
+      });
     } catch (err: any) {
       console.error("Submit error:", err);
       alert(err.message || "Something went wrong during submission. Please try again.");
@@ -600,8 +582,7 @@ _Sent via MIT-ADT Boat Club Website_
               letterSpacing: "0.03em",
             }}
           >
-            <Phone size={18} />
-            {submitting ? "Submitting Registration..." : "Submit via WhatsApp"}
+            {submitting ? "Submitting Registration..." : "Submit Registration"}
             <ChevronRight size={18} />
           </button>
 
@@ -612,9 +593,11 @@ _Sent via MIT-ADT Boat Club Website_
               color: "#9CA3AF",
               textAlign: "center",
               marginTop: "16px",
+              lineHeight: "1.6",
             }}
           >
-            Clicking submit will open WhatsApp with your details pre-filled. Our team will get back to you shortly!
+            For any inquiries or if you face any problems, contact us on WhatsApp at <br />
+            <a href="https://wa.me/919822232577" target="_blank" rel="noopener noreferrer" style={{ color: "#2563eb", fontWeight: 600 }}>+91 98222 32577</a>
           </p>
 
         </motion.div>
