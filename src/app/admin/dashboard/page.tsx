@@ -12,6 +12,7 @@ import {
   Clock,
   RefreshCw,
   Loader2,
+  ClipboardList,
 } from "lucide-react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
@@ -23,6 +24,7 @@ type DashboardStats = {
   athletes: number;
   events: number;
   gallery: number;
+  registrations: number;
 };
 
 type ActivityItem = {
@@ -38,6 +40,7 @@ const statConfig = [
   { key: "athletes" as const, label: "Athletes", icon: Users, color: "#10b981" },
   { key: "events" as const, label: "Events", icon: CalendarDays, color: "#8b5cf6" },
   { key: "gallery" as const, label: "Gallery Photos", icon: ImageIcon, color: "#ec4899" },
+  { key: "registrations" as const, label: "Registrations", icon: ClipboardList, color: "#06b6d4" },
 ];
 
 // ── Relative time helper ────────────────────────────────────────────────────
@@ -65,6 +68,7 @@ const activityMeta: Record<string, { color: string; emoji: string }> = {
   athlete: { color: "#10b981", emoji: "🏅" },
   event: { color: "#8b5cf6", emoji: "📅" },
   gallery: { color: "#ec4899", emoji: "🖼️" },
+  registration: { color: "#06b6d4", emoji: "🎽" },
 };
 
 export default function AdminDashboard() {
