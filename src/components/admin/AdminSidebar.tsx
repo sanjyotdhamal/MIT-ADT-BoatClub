@@ -3,11 +3,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Newspaper, Trophy, Users,
-  CalendarDays, Image, LogOut, ChevronLeft, ChevronRight,
+  CalendarDays, Image, LogOut, ChevronLeft, ChevronRight, ClipboardList,
 } from "lucide-react";
 
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
+  { icon: ClipboardList,   label: "Registrations", href: "/admin/registrations" },
   { icon: Newspaper,       label: "News",      href: "/admin/news"      },
   { icon: Trophy,          label: "Results",   href: "/admin/results"   },
   { icon: Users,           label: "Athletes",  href: "/admin/athletes"  },
