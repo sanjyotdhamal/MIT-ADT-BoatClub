@@ -4,29 +4,32 @@ const Result = require("../models/Result");
 const Athlete = require("../models/Athlete");
 const Event = require("../models/Event");
 const Gallery = require("../models/Gallery");
+const Registration = require("../models/Registration");
 const router = express.Router();
 
 // ─── Dashboard Stats + Recent Activity ────────────────────────────────────────
 router.get("/", async (req, res) => {
   try {
     // Run all count queries in parallel for speed
-    const [newsCount, resultsCount, athletesCount, eventsCount, galleryCount] =
+    const [newsCount, resultsCount, athletesCount, eventsCount, galleryCount, registrationsCount] =
       await Promise.all([
         News.countDocuments(),
         Result.countDocuments(),
         Athlete.countDocuments(),
         Event.countDocuments(),
         Gallery.countDocuments(),
+        Registration.countDocuments(),
       ]);
 
     // Fetch recent items from each collection (last 5 each, sorted by createdAt)
-    const [recentNews, recentResults, recentAthletes, recentEvents, recentGallery] =
+    const [recentNews, recentResults, recentAthletes, recentEvents, recentGallery, recentRegistrations] =
       await Promise.all([
         News.find().sort({ createdAt: -1 }).limit(5).select("title createdAt").lean(),
         Result.find().sort({ createdAt: -1 }).limit(5).select("eventName boatClass medal createdAt").lean(),
         Athlete.find().sort({ createdAt: -1 }).limit(5).select("name event createdAt").lean(),
         Event.find().sort({ createdAt: -1 }).limit(5).select("name createdAt").lean(),
         Gallery.find().sort({ createdAt: -1 }).limit(5).select("title createdAt").lean(),
+        Registration.find().sort({ createdAt: -1 }).limit(5).select("name createdAt").lean(),
       ]);
 
     // Merge all recent items into a single timeline
@@ -61,6 +64,12 @@ router.get("/", async (req, res) => {
         item: g.title,
         time: g.createdAt,
       })),
+      ...recentRegistrations.map((r) => ({
+        type: "registration",
+        action: "Student Registered",
+        item: r.name,
+        time: r.createdAt,
+      })),
     ]
       .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
       .slice(0, 10); // Top 10 most recent across everything
@@ -72,6 +81,7 @@ router.get("/", async (req, res) => {
         athletes: athletesCount,
         events: eventsCount,
         gallery: galleryCount,
+        registrations: registrationsCount,
       },
       recentActivity,
     });
