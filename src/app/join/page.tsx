@@ -23,6 +23,7 @@ export default function JoinPage() {
 
   const [uploadingBirth, setUploadingBirth] = useState(false);
   const [uploadingDomicile, setUploadingDomicile] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -60,7 +61,7 @@ export default function JoinPage() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.name || !form.phone) {
       alert("Please fill Name and Phone!");
       return;
@@ -71,7 +72,20 @@ export default function JoinPage() {
       return;
     }
 
-    const message = `
+    setSubmitting(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to submit registration details to server.");
+      }
+
+      const message = `
 *MIT-ADT Boat Club — Join Request*
 
 *Personal Details*
@@ -101,11 +115,17 @@ export default function JoinPage() {
 ${form.reason || "N/A"}
 
 _Sent via MIT-ADT Boat Club Website_
-    `.trim();
+      `.trim();
 
-    const whatsappNumber = "919822232577"; // Replace with actual WhatsApp number
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, "_blank");
+      const whatsappNumber = "919822232577"; // Replace with actual WhatsApp number
+      const encodedMessage = encodeURIComponent(message);
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, "_blank");
+    } catch (err: any) {
+      console.error("Submit error:", err);
+      alert(err.message || "Something went wrong during submission. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputStyle = {
@@ -187,7 +207,7 @@ _Sent via MIT-ADT Boat Club Website_
             lineHeight: 1.8,
           }}
         >
-        Become part of a passionate rowing community dedicated to excellence, teamwork, and personal growth.
+          Become part of a passionate rowing community dedicated to excellence, teamwork, and personal growth.
           Complete the form below to begin your journey with MIT-ADT Boat Club.
         </motion.p>
       </div>
@@ -336,7 +356,7 @@ _Sent via MIT-ADT Boat Club Website_
               💡 <strong>Don't have NSRS or RF IDs?</strong> Click the links below to generate them:
               <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginTop: "8px" }}>
                 <a
-                  href="https://nsrs.sportsauthorityofindia.gov.in/"
+                  href="https://account.kheloindia.gov.in/#/registration"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -351,7 +371,7 @@ _Sent via MIT-ADT Boat Club Website_
                   Register on SAI NSRS Portal ↗
                 </a>
                 <a
-                  href="https://rowingfederationofindia.com/"
+                  href="https://forms.gle/HopBnrzJk4eEV6oJ6"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -561,9 +581,10 @@ _Sent via MIT-ADT Boat Club Website_
           {/* Submit Button */}
           <button
             onClick={handleSubmit}
+            disabled={submitting || uploadingBirth || uploadingDomicile}
             style={{
               width: "100%",
-              background: "#1E3A5F",
+              background: (submitting || uploadingBirth || uploadingDomicile) ? "#94a3b8" : "#1E3A5F",
               color: "#ffffff",
               padding: "16px 32px",
               borderRadius: "10px",
@@ -571,7 +592,7 @@ _Sent via MIT-ADT Boat Club Website_
               fontSize: "16px",
               fontWeight: 700,
               border: "none",
-              cursor: "pointer",
+              cursor: (submitting || uploadingBirth || uploadingDomicile) ? "not-allowed" : "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -580,7 +601,7 @@ _Sent via MIT-ADT Boat Club Website_
             }}
           >
             <Phone size={18} />
-            Submit via WhatsApp
+            {submitting ? "Submitting Registration..." : "Submit via WhatsApp"}
             <ChevronRight size={18} />
           </button>
 
