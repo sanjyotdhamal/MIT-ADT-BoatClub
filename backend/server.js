@@ -17,6 +17,7 @@ app.use("/api/results", require("./routes/results"));
 app.use("/api/athletes", require("./routes/athletes"));
 app.use("/api/events", require("./routes/events"));
 app.use("/api/gallery", require("./routes/gallery"));
+app.use("/api/dashboard", require("./routes/dashboard"));
 
 // Test route
 app.get("/", (req, res) => {

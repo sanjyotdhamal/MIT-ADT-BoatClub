@@ -45,26 +45,58 @@ export default function AdminNews() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // ── Cache helpers (stale-while-revalidate) ──────────────────────────────
+  const CACHE_KEY = "admin_news_cache";
+
+  const getCachedNews = (): NewsItem[] | null => {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    } catch { /* ignore corrupt cache */ }
+    return null;
+  };
+
+  const setCachedNews = (data: NewsItem[]) => {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    } catch { /* quota exceeded — silently ignore */ }
+  };
+
   useEffect(() => {
     if (!localStorage.getItem("adminLoggedIn")) {
       router.push("/admin/login");
       return;
     }
-    fetchNews();
+
+    // 1) Show cached data instantly (no loading spinner)
+    const cached = getCachedNews();
+    if (cached && cached.length > 0) {
+      setNews(cached);
+      setLoading(false);       // instant render with stale data
+      fetchNews(true);         // silently refresh in background
+    } else {
+      fetchNews(false);        // no cache → show loading spinner
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  const fetchNews = async () => {
-    setLoading(true);
+  const fetchNews = async (background = false) => {
+    if (!background) setLoading(true);
     try {
       const res = await fetch(`${API}/news`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      if (Array.isArray(data)) setNews(data);
+      if (Array.isArray(data)) {
+        setNews(data);
+        setCachedNews(data);   // update cache for next visit
+      }
     } catch (err) {
       console.error("Fetch error:", err);
-      setError("Failed to load news. Is the backend running?");
+      if (!background) setError("Failed to load news. Is the backend running?");
     }
-    setLoading(false);
+    if (!background) setLoading(false);
   };
 
   const showSuccess = (msg: string) => {
@@ -99,10 +131,12 @@ export default function AdminNews() {
         showError(data.message || "Failed to update featured status.");
         return;
       }
-      // Update state locally instead of refetching
-      setNews((prev) =>
-        prev.map((n) => (n._id === item._id ? { ...n, featured: willEnable } : n))
-      );
+      // Update state + cache locally instead of refetching
+      setNews((prev) => {
+        const updated = prev.map((n) => (n._id === item._id ? { ...n, featured: willEnable } : n));
+        setCachedNews(updated);
+        return updated;
+      });
       showSuccess(willEnable ? "⭐ Added to featured!" : "Removed from featured.");
     } catch (err) {
       console.error("Toggle featured error:", err);
@@ -199,13 +233,19 @@ export default function AdminNews() {
         return;
       }
 
-      // Update state locally instead of refetching
+      // Update state + cache locally instead of refetching
       if (editingNews) {
-        setNews((prev) =>
-          prev.map((n) => (n._id === editingNews._id ? data : n))
-        );
+        setNews((prev) => {
+          const updated = prev.map((n) => (n._id === editingNews._id ? data : n));
+          setCachedNews(updated);
+          return updated;
+        });
       } else {
-        setNews((prev) => [data, ...prev]);
+        setNews((prev) => {
+          const updated = [data, ...prev];
+          setCachedNews(updated);
+          return updated;
+        });
       }
       setShowForm(false);
       setEditingNews(null);
@@ -230,8 +270,12 @@ export default function AdminNews() {
         showError(data.message || "Delete failed.");
         return;
       }
-      // Update state locally instead of refetching
-      setNews((prev) => prev.filter((n) => n._id !== id));
+      // Update state + cache locally instead of refetching
+      setNews((prev) => {
+        const updated = prev.filter((n) => n._id !== id);
+        setCachedNews(updated);
+        return updated;
+      });
       showSuccess("News deleted.");
     } catch (err) {
       console.error("Delete error:", err);
