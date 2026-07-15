@@ -62,13 +62,13 @@ export default function JoinPage() {
   };
 
   const handleSubmit = async () => {
-    if (!form.name || !form.phone) {
-      alert("Please fill Name and Phone!");
+    if (!form.name || !form.age || !form.phone || !form.email || !form.aadharNo) {
+      alert("Please fill all mandatory personal details (marked with *)!");
       return;
     }
 
-    if (!form.birthCertificate) {
-      alert("Please upload your Birth Certificate (Compulsory)!");
+    if (!form.birthCertificate || !form.domicile) {
+      alert("Please upload both Birth and Domicile Certificates (marked with *)!");
       return;
     }
 
@@ -239,7 +239,7 @@ export default function JoinPage() {
                 />
               </div>
               <div>
-                <label style={labelStyle}>Age</label>
+                <label style={labelStyle}>Age *</label>
                 <input
                   type="number"
                   name="age"
@@ -261,7 +261,7 @@ export default function JoinPage() {
                 />
               </div>
               <div>
-                <label style={labelStyle}>Email Address</label>
+                <label style={labelStyle}>Email Address *</label>
                 <input
                   type="email"
                   name="email"
@@ -272,7 +272,7 @@ export default function JoinPage() {
                 />
               </div>
               <div style={{ gridColumn: "span 2" }}>
-                <label style={labelStyle}>Aadhar Card Number</label>
+                <label style={labelStyle}>Aadhar Card Number *</label>
                 <input
                   type="text"
                   name="aadharNo"
@@ -350,7 +350,7 @@ export default function JoinPage() {
                     gap: "4px"
                   }}
                 >
-                  Register on SAI NSRS Portal ↗
+                  Register on NSRS Portal ↗
                 </a>
                 <a
                   href="https://forms.gle/HopBnrzJk4eEV6oJ6"
@@ -373,7 +373,7 @@ export default function JoinPage() {
             {/* Document Upload Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
               <div>
-                <label style={labelStyle}>Birth Certificate * <span style={{ color: "#ef4444", fontWeight: 500 }}>(Compulsory)</span></label>
+                <label style={labelStyle}>Birth Certificate *</label>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   <label style={{
                     display: "flex",
@@ -414,7 +414,7 @@ export default function JoinPage() {
               </div>
 
               <div>
-                <label style={labelStyle}>Domicile Certificate</label>
+                <label style={labelStyle}>Domicile Certificate *</label>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   <label style={{
                     display: "flex",
@@ -596,7 +596,7 @@ export default function JoinPage() {
               lineHeight: "1.6",
             }}
           >
-            For any inquiries or if you face any problems, contact us on WhatsApp at <br />
+            For any inquiries or if you face any problems, contact us on <br />
             <a href="https://wa.me/919822232577" target="_blank" rel="noopener noreferrer" style={{ color: "#2563eb", fontWeight: 600 }}>+91 98222 32577</a>
           </p>
 
