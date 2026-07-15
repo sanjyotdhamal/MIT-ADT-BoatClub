@@ -393,6 +393,31 @@ export default function AboutPage() {
             Be Part of Our Story
           </a>
         </motion.div>
+        {/* Rowing Technique Section */}
+<motion.div
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.7 }}
+  style={{
+    marginTop: "80px",
+    textAlign: "center",
+  }}
+>
+  <p style={{ color: "#6B7280", fontSize: "13px", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px", fontFamily: "Inter, sans-serif" }}>
+    Learn The Sport
+  </p>
+  <h2 style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "52px", color: "#1E3A5F", letterSpacing: "0.04em", marginBottom: "30px" }}>
+    Rowing Technique
+  </h2>
+  <div style={{ background: "#f8fafc", borderRadius: "20px", padding: "40px", border: "1px solid rgba(30,58,95,0.08)", display: "inline-block" }}>
+    <img
+      src="/images/rowing-technique.webp"
+      alt="Rowing Technique"
+      style={{ maxWidth: "1200px", width: "100%", height: "auto" }}
+    />
+  </div>
+</motion.div>
 
       </div>
     </div>

@@ -327,7 +327,7 @@ export default function AdminRegistrations() {
               </div>
             ) : (
               <div style={{ display: "grid", gridTemplateColumns: selectedReg ? "1.2fr 1fr" : "1fr", gap: "24px", transition: "all 0.3s ease" }}>
-                
+
                 {/* Table List */}
                 <div style={{ background: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden" }}>
                   <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13px" }}>
@@ -429,11 +429,11 @@ export default function AdminRegistrations() {
                       <h4 style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "#9CA3AF", letterSpacing: "0.05em", marginBottom: "10px" }}>
                         Personal Details
                       </h4>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px" }}>
-                        <div><strong>Phone:</strong> {selectedReg.phone}</div>
-                        <div><strong>Email:</strong> {selectedReg.email || "N/A"}</div>
-                        <div><strong>Age:</strong> {selectedReg.age || "N/A"}</div>
-                        <div><strong>Aadhar Card No:</strong> {selectedReg.aadharNo || "N/A"}</div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: "#4B5563" }}>
+                        <div><strong style={{ color: "#1E3A5F" }}>Phone:</strong> {selectedReg.phone}</div>
+                        <div><strong style={{ color: "#1E3A5F" }}>Email:</strong> {selectedReg.email || "N/A"}</div>
+                        <div><strong style={{ color: "#1E3A5F" }}>Age:</strong> {selectedReg.age || "N/A"}</div>
+                        <div><strong style={{ color: "#1E3A5F" }}>Aadhar Card No:</strong> {selectedReg.aadharNo || "N/A"}</div>
                       </div>
                     </div>
 
@@ -442,9 +442,9 @@ export default function AdminRegistrations() {
                       <h4 style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "#9CA3AF", letterSpacing: "0.05em", marginBottom: "10px" }}>
                         Sports IDs
                       </h4>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px" }}>
-                        <div><strong>NSRS ID:</strong> {selectedReg.nsrsId || "N/A"}</div>
-                        <div><strong>RF ID:</strong> {selectedReg.rfId || "N/A"}</div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: "#4B5563" }}>
+                        <div><strong style={{ color: "#1E3A5F" }}>NSRS ID:</strong> {selectedReg.nsrsId || "N/A"}</div>
+                        <div><strong style={{ color: "#1E3A5F" }}>RF ID:</strong> {selectedReg.rfId || "N/A"}</div>
                       </div>
                     </div>
 
@@ -453,10 +453,10 @@ export default function AdminRegistrations() {
                       <h4 style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "#9CA3AF", letterSpacing: "0.05em", marginBottom: "10px" }}>
                         Academic Details
                       </h4>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px" }}>
-                        <div><strong>Department:</strong> {selectedReg.department || "N/A"}</div>
-                        <div><strong>Year:</strong> {selectedReg.year || "N/A"}</div>
-                        <div><strong>Enrolment No:</strong> {selectedReg.enrolment_no || "N/A"}</div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: "#4B5563" }}>
+                        <div><strong style={{ color: "#1E3A5F" }}>Department:</strong> {selectedReg.department || "N/A"}</div>
+                        <div><strong style={{ color: "#1E3A5F" }}>Year:</strong> {selectedReg.year || "N/A"}</div>
+                        <div><strong style={{ color: "#1E3A5F" }}>Enrolment No:</strong> {selectedReg.enrolment_no || "N/A"}</div>
                       </div>
                     </div>
 
@@ -465,10 +465,10 @@ export default function AdminRegistrations() {
                       <h4 style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "#9CA3AF", letterSpacing: "0.05em", marginBottom: "10px" }}>
                         Rowing Info
                       </h4>
-                      <div style={{ fontSize: "13px" }}>
-                        <div style={{ marginBottom: "8px" }}><strong>Experience:</strong> {selectedReg.experience || "N/A"}</div>
-                        <div><strong>Why join:</strong></div>
-                        <div style={{ background: "#f8fafc", padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0", marginTop: "4px", fontStyle: "italic", lineHeight: "1.5" }}>
+                      <div style={{ fontSize: "13px", color: "#4B5563" }}>
+                        <div style={{ marginBottom: "8px" }}><strong style={{ color: "#1E3A5F" }}>Experience:</strong> {selectedReg.experience || "N/A"}</div>
+                        <div><strong style={{ color: "#1E3A5F" }}>Why join:</strong></div>
+                        <div style={{ background: "#f8fafc", color: "#4B5563", padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0", marginTop: "4px", fontStyle: "italic", lineHeight: "1.5" }}>
                           "{selectedReg.reason || "No reason specified"}"
                         </div>
                       </div>
@@ -548,7 +548,7 @@ export default function AdminRegistrations() {
             <div style={{ display: "flex", gap: "10px", justifyContent: "end" }}>
               <button
                 onClick={() => setDeleteConfirm(null)}
-                style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "none", cursor: "pointer", fontSize: "13px" }}
+                style={{ padding: "8px 16px", borderRadius: "6px", border: "none", background: "#f1f5f9", color: "#4B5563", fontWeight: 600, cursor: "pointer", fontSize: "13px" }}
               >
                 Cancel
               </button>
