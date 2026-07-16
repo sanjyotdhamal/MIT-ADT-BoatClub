@@ -20,7 +20,7 @@ const values = [
   },
   {
     title: "Legacy",
-    description: "30+ years of producing state, national and international level rowing athletes.",
+    description: "15+ years of producing state, national and international level rowing athletes.",
     icon: Medal,
   },
 ];
@@ -134,8 +134,7 @@ export default function AboutPage() {
               }}
             >
               MIT-ADT Boat Club is one of Pune's most prestigious collegiate rowing
-              clubs, established under MIT ADT University. We have been nurturing
-              rowing talent since our founding, producing athletes who have gone on
+              clubs, established under MIT ADT University.We have been developing rowing talent since our founding, producing athletes who have gone on
               to represent Maharashtra and India at the highest levels of competition.
             </p>
             <p
@@ -147,7 +146,7 @@ export default function AboutPage() {
                 marginBottom: "32px",
               }}
             >
-              Our club operates on the serene waters of Pune, providing world-class
+              Our club operates on the serene waters of the Mula-Mutha River in Pune, providing world-class
               training facilities, experienced coaches, and a supportive community
               for rowers of all skill levels — from complete beginners to elite
               competitive athletes.
@@ -393,6 +392,32 @@ export default function AboutPage() {
             Be Part of Our Story
           </a>
         </motion.div>
+
+        {/* Boat Types Section */}
+<motion.div
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.7 }}
+  style={{
+    marginTop: "80px",
+    textAlign: "center",
+  }}
+>
+   <p style={{ color: "#6B7280", fontSize: "13px", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px", fontFamily: "Inter, sans-serif" }}>
+    Learn The Sport
+  </p>
+  <h2 style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "52px", color: "#1E3A5F", letterSpacing: "0.04em", marginBottom: "40px" }}>
+    Types of Boats
+  </h2>
+  <div style={{ background: "#f8fafc", borderRadius: "20px", padding: "40px", border: "1px solid rgba(30,58,95,0.08)", display: "inline-block" }}>
+    <img
+      src="/images/boat-types.jpg"
+      alt="Types of Rowing Boats"
+      style={{ maxWidth: "1200px", width: "100%", height: "auto" }}
+    />
+  </div>
+</motion.div>
         {/* Rowing Technique Section */}
 <motion.div
   initial={{ opacity: 0, y: 30 }}
@@ -404,9 +429,6 @@ export default function AboutPage() {
     textAlign: "center",
   }}
 >
-  <p style={{ color: "#6B7280", fontSize: "13px", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px", fontFamily: "Inter, sans-serif" }}>
-    Learn The Sport
-  </p>
   <h2 style={{ fontFamily: "Bebas Neue, sans-serif", fontSize: "52px", color: "#1E3A5F", letterSpacing: "0.04em", marginBottom: "30px" }}>
     Rowing Technique
   </h2>
