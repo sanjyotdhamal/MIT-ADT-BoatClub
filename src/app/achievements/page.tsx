@@ -2,8 +2,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy, User, BookOpen, Calendar } from "lucide-react";
-
+import { Trophy, User, BookOpen, Calendar, Target, ChevronDown, ChevronUp } from "lucide-react";
 // ============================================================
 // EDIT YOUR DATA HERE
 // Add/remove entries as needed
@@ -50,9 +49,40 @@ const athletesInService = [
 ];
 
 // ============================================================
+// Mission Lakshyavedh Data
+// ============================================================
+const lakshyavedhCenters = [
+  {
+    id: "hpc",
+    name: "High Performance Center",
+    athletes: [
+      { name: "Aniket Kolte",description: "National Player" },
+      { name: "Yogesh Borole",description: "National Player"},
+      { name: "Yashraj Gaikwad",description: "National Player"},
+      { name: "Swaraj Aghav",description: "National Player" },
+    ]
+  },
+  {
+    id: "dsec",
+    name: "Divisional Sports Excellence Center",
+    athletes: [
+      { name: "Placeholder Athlete 3", description: "Rowing Player" },
+    ]
+  },
+  {
+    id: "pvk",
+    name: "Pratibha Vikas Kendra",
+    athletes: [
+      { name: "Placeholder Athlete 4", description: "Rowing Player" },
+    ]
+  }
+];
+
+// ============================================================
 
 export default function AchievementsPage() {
-const [activeTab, setActiveTab] = useState<"awards" | "service">("service");
+const [activeTab, setActiveTab] = useState<"awards" | "service" | "lakshyavedh">("service");
+const [expandedCenter, setExpandedCenter] = useState<string | null>(null);
   return (
     <div style={{ background: "#f8fafc", minHeight: "100vh" }}>
 
@@ -142,6 +172,27 @@ const [activeTab, setActiveTab] = useState<"awards" | "service">("service");
           >
             <Trophy size={16} />
             Best Sports Person Award
+          </button>
+          <button
+            onClick={() => setActiveTab("lakshyavedh")}
+            style={{
+              padding: "12px 32px",
+              borderRadius: "8px",
+              fontFamily: "Inter, sans-serif",
+              fontSize: "14px",
+              fontWeight: 700,
+              cursor: "pointer",
+              border: "2px solid #1E3A5F",
+              background: activeTab === "lakshyavedh" ? "#1E3A5F" : "transparent",
+              color: activeTab === "lakshyavedh" ? "#ffffff" : "#1E3A5F",
+              transition: "all 0.2s ease",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <Target size={16} />
+            Mission Lakshyavedh
           </button>
         </div>
 
@@ -375,6 +426,130 @@ const [activeTab, setActiveTab] = useState<"awards" | "service">("service");
                     {athlete.service}
                   </div>
                 </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Mission Lakshyavedh Tab */}
+        {activeTab === "lakshyavedh" && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <h2
+              style={{
+                fontFamily: "Bebas Neue, sans-serif",
+                fontSize: "36px",
+                color: "#1E3A5F",
+                letterSpacing: "0.04em",
+                marginBottom: "8px",
+                textAlign: "center",
+              }}
+            >
+              Mission Lakshyavedh
+            </h2>
+            <p
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontSize: "14px",
+                color: "#6B7280",
+                textAlign: "center",
+                marginBottom: "36px",
+              }}
+            >
+              A Maharashtra Government initiative to develop grassroots talent into champions.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {lakshyavedhCenters.map((center, i) => (
+                <div
+                  key={center.id}
+                  style={{
+                    background: "#ffffff",
+                    borderRadius: "14px",
+                    overflow: "hidden",
+                    boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+                    border: "1px solid rgba(30,58,95,0.08)",
+                  }}
+                >
+                  <button
+                    onClick={() => setExpandedCenter(expandedCenter === center.id ? null : center.id)}
+                    style={{
+                      width: "100%",
+                      padding: "20px 28px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      textAlign: "left",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "Bebas Neue, sans-serif",
+                        fontSize: "24px",
+                        color: "#1E3A5F",
+                        letterSpacing: "0.03em",
+                      }}
+                    >
+                      {center.name}
+                    </div>
+                    <div>
+                      {expandedCenter === center.id ? (
+                        <ChevronUp size={24} color="#1E3A5F" />
+                      ) : (
+                        <ChevronDown size={24} color="#1E3A5F" />
+                      )}
+                    </div>
+                  </button>
+
+                  {/* Athletes List */}
+                  {expandedCenter === center.id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      style={{ padding: "0 28px 24px" }}
+                    >
+                      <div style={{ borderTop: "1px solid rgba(30,58,95,0.08)", paddingTop: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                        {center.athletes.map((athlete, idx) => (
+                          <div key={idx} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <div
+                              style={{
+                                width: "36px",
+                                height: "36px",
+                                background: "#f1f5f9",
+                                borderRadius: "50%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <User size={16} color="#1E3A5F" />
+                            </div>
+                            <div>
+                              <div style={{ fontFamily: "Inter, sans-serif", fontSize: "15px", fontWeight: 600, color: "#1E3A5F" }}>
+                                {athlete.name}
+                              </div>
+                              <div style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#6B7280" }}>
+                                {athlete.description}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        {center.athletes.length === 0 && (
+                          <div style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", color: "#6B7280", fontStyle: "italic" }}>
+                            No athletes listed yet.
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
               ))}
             </div>
           </motion.div>
