@@ -144,7 +144,7 @@ export default function CoachesPage() {
                 style={{
                   background: "#ffffff",
                   borderRadius: "20px",
-                  overflow: "hidden",
+                  overflowX: "hidden", overflowY: "hidden",
                   cursor: "pointer",
                   boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
                   border: "1px solid rgba(30,58,95,0.08)",
@@ -160,7 +160,7 @@ export default function CoachesPage() {
                 }}
               >
                 {/* Image */}
-                <div style={{ height: "280px", overflow: "hidden", position: "relative" }}>
+                <div style={{ height: "280px", overflowX: "hidden", overflowY: "hidden", position: "relative" }}>
                   <img
                     src={coach.image}
                     alt={coach.name}
@@ -271,7 +271,7 @@ export default function CoachesPage() {
                 style={{
                   background: "#ffffff",
                   borderRadius: "20px",
-                  overflow: "hidden",
+                  overflowX: "hidden", overflowY: "hidden",
                   cursor: "pointer",
                   boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
                   border: "1px solid rgba(30,58,95,0.08)",
@@ -287,7 +287,7 @@ export default function CoachesPage() {
                 }}
               >
                 {/* Image */}
-                <div style={{ height: "240px", overflow: "hidden", position: "relative" }}>
+                <div style={{ height: "240px", overflowX: "hidden", overflowY: "hidden", position: "relative" }}>
                   <img
                     src={boatman.image}
                     alt={boatman.name}
@@ -390,20 +390,41 @@ export default function CoachesPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9 }}
               onClick={(e) => e.stopPropagation()}
-              className="modal-scroll"
+              className="modal-split-container"
               style={{
                 background: "#ffffff",
                 borderRadius: "20px",
-                overflow: "hidden",
-                maxWidth: "700px",
+                overflowX: "hidden", overflowY: "hidden",
+                maxWidth: "850px",
                 width: "100%",
+                height: "580px",
                 maxHeight: "90vh",
-                overflowY: "auto",
-                scrollbarWidth: "none",
+                display: "flex",
+                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.3)",
+                position: "relative",
               }}
             >
-              {/* Image */}
-              <div style={{ position: "relative", height: "280px" }}>
+              <style dangerouslySetInnerHTML={{__html: `
+                @media (max-width: 768px) {
+                  .modal-split-container {
+                    flex-direction: column !important;
+                    height: auto !important;
+                    max-height: 90vh !important;
+                  }
+                  .modal-left-image {
+                    width: 100% !important;
+                    height: 220px !important;
+                  }
+                  .modal-right-details {
+                    width: 100% !important;
+                    height: auto !important;
+                    overflow-y: visible !important;
+                  }
+                }
+              `}} />
+
+              {/* Left Side: Portrait Image */}
+              <div className="modal-left-image" style={{ width: "40%", position: "relative", height: "100%", background: "#000", flexShrink: 0 }}>
                 <img
                   src={selected.image}
                   alt={selected.name}
@@ -413,195 +434,204 @@ export default function CoachesPage() {
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)",
+                    background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
                   }}
                 />
-                <button
-                  onClick={() => setSelected(null)}
-                  style={{
-                    position: "absolute",
-                    top: "16px",
-                    right: "16px",
-                    background: "rgba(0,0,0,0.5)",
-                    border: "none",
-                    color: "#ffffff",
-                    width: "36px",
-                    height: "36px",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <X size={18} />
-                </button>
-                <div style={{ position: "absolute", bottom: "20px", left: "24px" }}>
-                  <div
-                    style={{
-                      background: "#1E3A5F",
-                      color: "#ffffff",
-                      fontSize: "11px",
-                      fontWeight: 700,
-                      padding: "4px 12px",
-                      borderRadius: "4px",
-                      fontFamily: "Inter, sans-serif",
-                      textTransform: "uppercase",
-                      marginBottom: "8px",
-                      display: "inline-block",
-                    }}
-                  >
-                    {selected.designation}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Bebas Neue, sans-serif",
-                      fontSize: "36px",
-                      color: "#ffffff",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {selected.name}
-                  </div>
-                </div>
               </div>
 
-              {/* Content */}
-              <div style={{ padding: "32px" }}>
-
-                {/* Stats */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: "16px",
-                    marginBottom: "28px",
-                  }}
-                >
-                  {[
-                    { icon: Clock, label: "Experience", value: selected.experience },
-                    { icon: Users, label: "Athletes Trained", value: (selected as typeof coaches[0]).athletesTrained || "N/A" },
-                    { icon: Target, label: "Specialization", value: (selected as typeof coaches[0]).specialization || "Boat Operations" },
-                  ].map((stat, i) => (
+              {/* Right Side: Details */}
+              <div className="modal-right-details" style={{ width: "60%", display: "flex", flexDirection: "column", height: "100%", overflowX: "hidden", overflowY: "hidden" }}>
+                {/* Header with Close button */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "28px 32px 16px", borderBottom: "1px solid #f1f5f9" }}>
+                  <div>
                     <div
-                      key={i}
                       style={{
-                        background: "#f8fafc",
-                        borderRadius: "12px",
-                        padding: "16px",
-                        textAlign: "center",
-                        border: "1px solid rgba(30,58,95,0.08)",
+                        background: "#1E3A5F",
+                        color: "#ffffff",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        padding: "4px 12px",
+                        borderRadius: "4px",
+                        fontFamily: "Inter, sans-serif",
+                        textTransform: "uppercase",
+                        marginBottom: "8px",
+                        display: "inline-block",
                       }}
                     >
-                      <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
-                        <stat.icon size={20} color="#1E3A5F" />
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: "Bebas Neue, sans-serif",
-                          fontSize: "18px",
-                          color: "#1E3A5F",
-                          letterSpacing: "0.04em",
-                        }}
-                      >
-                        {stat.value}
-                      </div>
-                      <div style={{ fontFamily: "Inter, sans-serif", fontSize: "12px", color: "#6B7280" }}>
-                        {stat.label}
-                      </div>
+                      {selected.designation}
                     </div>
-                  ))}
+                    <h3
+                      style={{
+                        fontFamily: "Bebas Neue, sans-serif",
+                        fontSize: "36px",
+                        color: "#1E3A5F",
+                        letterSpacing: "0.04em",
+                        lineHeight: 1.1,
+                        margin: 0,
+                      }}
+                    >
+                      {selected.name}
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => setSelected(null)}
+                    style={{
+                      background: "#f1f5f9",
+                      border: "none",
+                      color: "#6B7280",
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "background 0.2s",
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "#e2e8f0"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "#f1f5f9"}
+                  >
+                    <X size={18} />
+                  </button>
                 </div>
 
-                {/* Bio */}
-                <div style={{ marginBottom: "24px" }}>
-                  <h4
+                {/* Details Scroll Area */}
+                <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px 32px", scrollbarWidth: "thin" }} className="modal-scroll">
+                  
+                  {/* Stats */}
+                  <div
                     style={{
-                      fontFamily: "Bebas Neue, sans-serif",
-                      fontSize: "22px",
-                      color: "#1E3A5F",
-                      letterSpacing: "0.04em",
-                      marginBottom: "12px",
+                      display: "grid",
+                      gridTemplateColumns: "repeat(3, 1fr)",
+                      gap: "16px",
+                      marginBottom: "28px",
                     }}
                   >
-                    About
-                  </h4>
-                  <p
-                    style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "15px",
-                      color: "#4B5563",
-                      lineHeight: 1.8,
-                    }}
-                  >
-                    {selected.bio}
-                  </p>
-                </div>
-
-                {/* Achievements or Responsibilities */}
-                <div>
-                  <h4
-                    style={{
-                      fontFamily: "Bebas Neue, sans-serif",
-                      fontSize: "22px",
-                      color: "#1E3A5F",
-                      letterSpacing: "0.04em",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    {selected.type === "coach" ? "Achievements" : "Responsibilities"}
-                  </h4>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {(selected.type === "coach"
-                      ? (selected as typeof coaches[0]).achievements
-                      : (selected as typeof boatmen[0]).responsibilities
-                    ).map((item, i) => (
+                    {[
+                      { icon: Clock, label: "Experience", value: selected.experience },
+                      { icon: Users, label: "Athletes Trained", value: (selected as typeof coaches[0]).athletesTrained || "N/A" },
+                      { icon: Target, label: "Specialization", value: (selected as typeof coaches[0]).specialization || "Boat Operations" },
+                    ].map((stat, i) => (
                       <div
                         key={i}
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                          padding: "10px 16px",
                           background: "#f8fafc",
-                          borderRadius: "8px",
+                          borderRadius: "12px",
+                          padding: "16px",
+                          textAlign: "center",
                           border: "1px solid rgba(30,58,95,0.08)",
                         }}
                       >
-                        <Award size={14} color="#1E3A5F" />
-                        <span style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "#4B5563" }}>
-                          {item}
-                        </span>
+                        <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
+                          <stat.icon size={20} color="#1E3A5F" />
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: "Bebas Neue, sans-serif",
+                            fontSize: "18px",
+                            color: "#1E3A5F",
+                            letterSpacing: "0.04em",
+                          }}
+                        >
+                          {stat.value}
+                        </div>
+                        <div style={{ fontFamily: "Inter, sans-serif", fontSize: "12px", color: "#6B7280" }}>
+                          {stat.label}
+                        </div>
                       </div>
                     ))}
                   </div>
-                </div>
 
-                {/* Philosophy (coaches only) */}
-                {selected.type === "coach" && (selected as typeof coaches[0]).philosophy && (
-                  <div
-                    style={{
-                      marginTop: "24px",
-                      background: "#1E3A5F",
-                      borderRadius: "12px",
-                      padding: "20px 24px",
-                    }}
-                  >
-                    <p
+                  {/* Bio */}
+                  <div style={{ marginBottom: "24px" }}>
+                    <h4
                       style={{
-                        fontFamily: "Playfair Display, serif",
-                        fontSize: "16px",
-                        color: "#ffffff",
-                        fontStyle: "italic",
-                        textAlign: "center",
-                        lineHeight: 1.6,
+                        fontFamily: "Bebas Neue, sans-serif",
+                        fontSize: "22px",
+                        color: "#1E3A5F",
+                        letterSpacing: "0.04em",
+                        marginBottom: "12px",
                       }}
                     >
-                      "{(selected as typeof coaches[0]).philosophy}"
+                      About
+                    </h4>
+                    <p
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "15px",
+                        color: "#4B5563",
+                        lineHeight: 1.8,
+                      }}
+                    >
+                      {selected.bio}
                     </p>
                   </div>
-                )}
 
+                  {/* Achievements or Responsibilities */}
+                  <div>
+                    <h4
+                      style={{
+                        fontFamily: "Bebas Neue, sans-serif",
+                        fontSize: "22px",
+                        color: "#1E3A5F",
+                        letterSpacing: "0.04em",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      {selected.type === "coach" ? "Achievements" : "Responsibilities"}
+                    </h4>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      {(selected.type === "coach"
+                        ? (selected as typeof coaches[0]).achievements
+                        : (selected as typeof boatmen[0]).responsibilities
+                      ).map((item, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                            padding: "10px 16px",
+                            background: "#f8fafc",
+                            borderRadius: "8px",
+                            border: "1px solid rgba(30,58,95,0.08)",
+                          }}
+                        >
+                          <Award size={14} color="#1E3A5F" />
+                          <span style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "#4B5563" }}>
+                            {item}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Philosophy (coaches only) */}
+                  {selected.type === "coach" && (selected as typeof coaches[0]).philosophy && (
+                    <div
+                      style={{
+                        marginTop: "24px",
+                        background: "#1E3A5F",
+                        borderRadius: "12px",
+                        padding: "20px 24px",
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontFamily: "Playfair Display, serif",
+                          fontSize: "16px",
+                          color: "#ffffff",
+                          fontStyle: "italic",
+                          textAlign: "center",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        "{(selected as typeof coaches[0]).philosophy}"
+                      </p>
+                    </div>
+                  )}
+
+                </div>
               </div>
             </motion.div>
           </motion.div>
